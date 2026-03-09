@@ -146,7 +146,7 @@ export default function EventDetailPage() {
             tempContainer.id = "temp-doc-container";
             document.body.appendChild(tempContainer);
 
-            root = ReactDOM.createRoot(tempContainer);
+            root = (ReactDOM as any).createRoot(tempContainer);
             root.render(
                 React.createElement(DocumentTemplate, { type: docType, ...docData, exportMode: true })
             );
