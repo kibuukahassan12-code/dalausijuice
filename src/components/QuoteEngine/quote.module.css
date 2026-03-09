@@ -1,0 +1,225 @@
+.engineSection {
+    padding: 4rem 0;
+    width: 100%;
+}
+
+.sectionHeader {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.sectionHeader h2 {
+    font-size: 2.25rem;
+    color: var(--color-plum);
+    margin-bottom: 0.75rem;
+}
+
+.sectionHeader span {
+    color: var(--color-orange);
+}
+
+.sectionHeader p {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.inputsCard {
+    background: white;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.inputsCard h2 {
+    color: var(--color-plum);
+    margin-bottom: 2rem;
+}
+
+.inputGroup {
+    margin-bottom: 2rem;
+}
+
+.inputGroup label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #475569;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-plum);
+}
+
+.servicesGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f1f5f9;
+    border-radius: 0.75rem;
+    cursor: pointer;
+}
+
+.checkboxGroup input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-orange);
+}
+
+.checkboxGroup label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* Quote Layout */
+.quoteArea {
+    background: white;
+    padding: 3rem;
+    border-radius: 4px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 100px;
+}
+
+.quoteHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid var(--color-plum);
+    padding-bottom: 1rem;
+}
+
+.quoteLogo {
+    height: 60px;
+    object-fit: contain;
+}
+
+.quoteTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+}
+
+.quoteTable th {
+    text-align: left;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.quoteTable td {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-plum);
+}
+
+.quoteFooter {
+    margin-top: 2rem;
+    border-top: 2px solid #f1f5f9;
+    padding-top: 1.5rem;
+}
+
+.feeLine {
+    display: flex;
+    justify-content: space-between;
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.totalLine {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--color-plum);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-plum);
+}
+
+.disclaimer {
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.downloadCta {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.pdfBtn {
+    flex: 1;
+    background: var(--color-plum);
+    color: white;
+    padding: 0.75rem 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    transition: all 0.2s;
+}
+
+.pdfBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.pdfBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.waBtn {
+    flex: 1;
+    background: #25d366;
+    color: white;
+    text-decoration: none;
+    padding: 0.75rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,359 @@
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
+    padding: 4rem 0;
+    background: #f8fafc;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    color: var(--color-plum);
+    margin: 0 0 0.5rem 0;
+}
+
+.highlight {
+    color: var(--color-orange);
+}
+
+.hero p {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.loading {
+    text-align: center;
+    padding: 4rem;
+    color: #64748b;
+}
+
+/* Loyalty Tier Card */
+.tierCard {
+    background: white;
+    border-radius: 2rem;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    border: 3px solid;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.tierHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.tierBadge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 2rem;
+    border-radius: 99px;
+    color: white;
+}
+
+.tierIcon {
+    font-size: 2rem;
+}
+
+.tierName {
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tierPoints {
+    text-align: right;
+}
+
+.pointsValue {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--color-plum);
+    line-height: 1;
+}
+
+.pointsLabel {
+    display: block;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+.tierBenefits {
+    margin-bottom: 2rem;
+}
+
+.tierBenefits h3 {
+    color: var(--color-plum);
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+}
+
+.perksList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.perk {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.perkIcon {
+    color: var(--color-green);
+    font-weight: 700;
+}
+
+.tierProgress {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+.progressHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.progressBar {
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.progressFill {
+    height: 100%;
+    transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 99px;
+}
+
+.progressText {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Stats Grid */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.statCard {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 1.25rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.statCard:hover {
+    transform: translateY(-5px);
+}
+
+.statIcon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.statContent {
+    flex: 1;
+}
+
+.statContent h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.statValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-plum);
+    margin: 0;
+}
+
+/* Orders Section */
+.ordersSection {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.ordersSection h2 {
+    color: var(--color-plum);
+    margin: 0 0 2rem 0;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+}
+
+.shopBtn {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: var(--color-orange);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.shopBtn:hover {
+    background: var(--color-orange-dark);
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.orderCard {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.orderHeader h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--color-plum);
+}
+
+.orderDate {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.orderStatus {
+    text-align: right;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.statusBadge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.statusBadge.completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.statusBadge.cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.orderTotal {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-plum);
+    margin: 0;
+}
+
+.orderItems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.orderItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.orderItem:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .tierCard {
+        padding: 1.5rem;
+    }
+
+    .tierHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tierPoints {
+        text-align: left;
+    }
+
+    .perksList {
+        grid-template-columns: 1fr;
+    }
+
+    .statsGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,265 @@
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
+}
+
+/* Hero */
+.hero {
+    height: 55vh;
+    /* Increased height for Gallery for better splash display */
+    min-height: 450px;
+    background-color: var(--color-plum);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+}
+
+.heroOverlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/orange-splash-hero.png');
+    background-size: 200% auto;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    mix-blend-mode: lighten;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.heroOverlay::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 1000px;
+    background-image: url('/images/orange-splash-background.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.heroContent {
+    max-width: 700px;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 2rem;
+}
+
+.heroContent h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    font-family: var(--font-outfit);
+}
+
+.highlight {
+    color: var(--color-orange);
+}
+
+.heroContent p {
+    font-size: 1.25rem;
+    opacity: 0.95;
+}
+
+/* Gallery Grid */
+.gallerySection {
+    padding: 4rem 0;
+    background: var(--color-off-white);
+}
+
+.galleryHint {
+    text-align: center;
+    color: var(--color-gray-800);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.galleryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.galleryItem {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: zoom-in;
+}
+
+.galleryItem:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ctaRow {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+}
+
+/* Lightbox */
+.lightboxOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.lightboxClose {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    transition: background 0.2s;
+}
+
+.lightboxClose:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.lightboxContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 98vw;
+    cursor: default;
+}
+
+.lightboxImageWrapper {
+    position: relative;
+    width: 96vw;
+    max-width: 1400px;
+    height: 90vh;
+    max-height: 90vh;
+}
+
+.lightboxContent img {
+    object-fit: contain;
+}
+
+.lightboxCaption {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .galleryGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .hero {
+        height: 40vh;
+        min-height: 300px;
+    }
+
+    .heroContent h1 {
+        font-size: 1.75rem;
+    }
+
+    .heroContent p {
+        font-size: 1rem;
+    }
+
+    .gallerySection {
+        padding: 2rem 0;
+    }
+
+    .galleryGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .galleryItem {
+        aspect-ratio: 16/10;
+    }
+
+    .ctaRow {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .lightboxOverlay {
+        padding: 0.25rem;
+    }
+
+    .lightboxClose {
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    .lightboxImageWrapper {
+        width: 98vw;
+        height: 70vh;
+    }
+}

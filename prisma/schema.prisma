@@ -1,0 +1,577 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g., "daily_menu_status"
+  value     String   // "OPEN" or "CLOSED"
+  updatedAt DateTime @updatedAt
+}
+
+model DailyRevenue {
+  id          String   @id @default(cuid())
+  date        DateTime @unique @default(now())
+  amount      Float
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model EventRecord {
+  id            String   @id @default(cuid())
+  eventName     String
+  clientName    String
+  eventDate     DateTime
+  venue         String?
+  revenue       Float
+  status        String   @default("Completed") // Pending, Completed, Cancelled
+  notes         String?
+  createdAt     DateTime @default(now())
+}
+
+// New Admin Portal Tables
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("Admin") // Admin, Production_Staff, Storekeeper, Quality_Officer, Production_Manager, MD
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PaymentMethod {
+  id       String    @id @default(cuid())
+  code     String    @unique
+  name     String
+  category String    // cash, mobile_money, card, bank, gateway
+  isActive Boolean   @default(true)
+  payments Payment[]
+  expenses Expense[]
+}
+
+model Customer {
+  id            String    @id @default(cuid())
+  name          String
+  phone         String    @unique
+  email         String?
+  passwordHash  String?
+  loyaltyPoints Int       @default(0)
+  loyaltyTier   String    @default("REGULAR") // REGULAR, VIP, GOLD, PLATINUM
+  referralCode  String?   @unique
+  orders        Order[]
+  events        Event[]
+  createdAt     DateTime  @default(now())
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  unitPrice   Float
+  costPerUnit Float?
+  isActive    Boolean     @default(true)
+  imageUrl    String?     // Flavor image path for daily menu
+  showOnMenu  Boolean     @default(true) // true = visible in daily menu (eye), false = hidden (crossed eye)
+  orderItems  OrderItem[]
+  eventItems  EventItem[]
+  recipe      Recipe?
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  customerId        String
+  orderDate         DateTime    @default(now())
+  orderType         String      // delivery, pickup
+  transportFee      Float       @default(0)
+  subtotal          Float
+  totalAmount       Float
+  status            String      @default("Pending") // Pending, Completed, Cancelled
+  fulfillmentStage  String      @default("ORDER_RECEIVED") // ORDER_RECEIVED, INVENTORY_RESERVED, AWAITING_PRODUCTION, IN_PRODUCTION, QUALITY_CHECK, READY, OUT_FOR_DELIVERY, DELIVERED, READY_FOR_PICKUP, PICKED_UP
+  deliveryAddress   String?
+  assignedBatchId   String?
+  estimatedDelivery DateTime?
+  pickupCode        String?
+  trackingNotes     String?
+  items             OrderItem[]
+  paymentLinks      PaymentLink[] @relation("OrderLink")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+}
+
+model Event {
+  id                String      @id @default(cuid())
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  customerId        String
+  eventName         String
+  eventDate         DateTime
+  location          String
+  setupFee          Float       @default(0)
+  serviceFee        Float       @default(0)
+  transportFee      Float       @default(0)
+  subtotal          Float
+  totalAmount       Float
+  status            String      @default("Upcoming") // Upcoming, Completed, Cancelled
+  items             EventItem[]
+  paymentLinks      PaymentLink[] @relation("EventLink")
+  createdAt         DateTime    @default(now())
+  // Production-specific fields for event catering
+  client_name       String?     @map("client_name")
+  ordered_liters    Float?      @map("ordered_liters")
+  jerrycans_required Float?     @map("jerrycans_required")
+  total_value_ugx   Float?      @map("total_value_ugx")
+  production_status String?     @default("PLANNED") @map("production_status") // PLANNED | PRODUCED | DELIVERED
+  production_plans   ProductionPlan[]
+}
+
+model EventItem {
+  id         String   @id @default(cuid())
+  event      Event    @relation(fields: [eventId], references: [id])
+  eventId    String
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+}
+
+model Payment {
+  id              String         @id @default(cuid())
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId String
+  amountPaid      Float
+  paymentDate     DateTime       @default(now())
+  paymentStatus   String         @default("Paid") // Paid, Partial, Pending
+  reference       String?
+  links           PaymentLink[]
+}
+
+model PaymentLink {
+  id         String   @id @default(cuid())
+  payment    Payment  @relation(fields: [paymentId], references: [id])
+  paymentId  String
+  entityType String   // Order, Event
+  entityId   String
+  order      Order?   @relation(fields: [entityId], references: [id], name: "OrderLink")
+  event      Event?   @relation(fields: [entityId], references: [id], name: "EventLink")
+}
+
+model Procurement {
+  id           String   @id @default(cuid())
+  itemName     String
+  supplier     String
+  quantity     Float
+  unitCost     Float
+  totalCost    Float
+  purchaseDate DateTime @default(now())
+}
+
+model Expense {
+  id              String         @id @default(cuid())
+  category        String         // transport, labor, packaging, utilities, marketing, equipment, other
+  description     String
+  amount          Float
+  expenseDate     DateTime       @default(now())
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId String
+}
+
+// Production Department Models - Production-Grade Schema
+
+model ProductionPlan {
+  id                String   @id @default(cuid())
+  plan_date         DateTime @map("plan_date")
+  juice_type        String   @map("juice_type")
+  target_liters     Float    @map("target_liters")
+  production_type   String   @map("production_type") // DAILY | EVENT
+  event_id          String?  @map("event_id")
+  expected_revenue_ugx Float @map("expected_revenue_ugx")
+  created_by        String   @map("created_by")
+  created_at        DateTime @default(now()) @map("created_at")
+  batches           ProductionBatch[]
+  event             Event?   @relation(fields: [event_id], references: [id])
+
+  @@map("production_plans")
+}
+
+model ProductionBatch {
+  id                String   @id @default(cuid())
+  batch_code        String   @unique @map("batch_code")
+  plan_id           String?  @map("plan_id")
+  juice_type        String   @map("juice_type")
+  start_time        DateTime @map("start_time")
+  end_time          DateTime? @map("end_time")
+  output_liters     Float    @default(0) @map("output_liters")
+  wastage_liters    Float    @default(0) @map("wastage_liters")
+  yield_percentage  Float?   @map("yield_percentage")
+  batch_value_ugx   Float?   @map("batch_value_ugx")
+  status            String   @default("PROCESSING") @map("status") // PROCESSING | QC_PENDING | APPROVED | REJECTED
+  created_at        DateTime @default(now()) @map("created_at")
+  plan              ProductionPlan? @relation(fields: [plan_id], references: [id])
+  raw_materials     BatchRawMaterial[]
+  quality_check     QualityCheck?
+  packaging_records PackagingRecord[]
+  finished_goods    FinishedGoodsInventory[]
+
+  @@map("production_batches")
+}
+
+model BatchRawMaterial {
+  id                String   @id @default(cuid())
+  batch_id          String   @map("batch_id")
+  inventory_item_id String?  @map("inventory_item_id")
+  material_name     String   @map("material_name")
+  quantity_used     Float    @map("quantity_used")
+  unit              String
+  cost_ugx          Float    @map("cost_ugx")
+  batch             ProductionBatch @relation(fields: [batch_id], references: [id])
+  inventoryItem     InventoryItem?  @relation(fields: [inventory_item_id], references: [id])
+
+  @@map("batch_raw_materials")
+}
+
+model QualityCheck {
+  id              String   @id @default(cuid())
+  batch_id        String   @unique @map("batch_id")
+  temperature_ok  Boolean  @map("temperature_ok")
+  hygiene_ok      Boolean  @map("hygiene_ok")
+  taste_ok        Boolean  @map("taste_ok")
+  status          String   @map("status") // APPROVED | REJECTED
+  remarks         String?
+  checked_by      String   @map("checked_by")
+  checked_at      DateTime @default(now()) @map("checked_at")
+  batch           ProductionBatch @relation(fields: [batch_id], references: [id])
+
+  @@map("quality_checks")
+}
+
+model PackagingRecord {
+  id                  String   @id @default(cuid())
+  batch_id            String   @map("batch_id")
+  package_type        String   @map("package_type") // BOTTLE | JERRYCAN
+  package_size_liters Float    @map("package_size_liters") // 1 | 10 | 15 | 20
+  quantity            Int
+  total_liters        Float    @map("total_liters")
+  total_value_ugx     Float    @map("total_value_ugx")
+  packaged_at         DateTime @default(now()) @map("packaged_at")
+  batch               ProductionBatch @relation(fields: [batch_id], references: [id])
+
+  @@map("packaging_records")
+}
+
+model FinishedGoodsInventory {
+  id              String   @id @default(cuid())
+  batch_id        String   @map("batch_id")
+  storage_type    String   @map("storage_type") // BOTTLE | JERRYCAN
+  quantity        Int
+  liters          Float
+  expiry_date     DateTime? @map("expiry_date")
+  available       Boolean  @default(true)
+  batch           ProductionBatch @relation(fields: [batch_id], references: [id])
+
+  @@map("finished_goods_inventory")
+}
+
+// Accounting Department Models - Double-Entry Bookkeeping (audit-ready, source-driven)
+
+model ChartOfAccount {
+  id                String   @id @default(cuid())
+  account_code      String   @unique @map("account_code")
+  account_name      String   @map("account_name")
+  account_type      String   @map("account_type") // ASSET | LIABILITY | EQUITY | REVENUE | COGS | EXPENSE
+  parent_account_id String?  @map("parent_id")
+  active            Boolean  @default(true)
+  entries           LedgerEntry[]
+  parent            ChartOfAccount?  @relation("AccountHierarchy", fields: [parent_account_id], references: [id])
+  children          ChartOfAccount[]  @relation("AccountHierarchy")
+
+  @@map("chart_of_accounts")
+}
+
+// Ledger: immutable entries, no deletes; every entry must reference a source (source_type + source_id)
+model LedgerEntry {
+  id              String   @id @default(cuid())
+  entry_date      DateTime @map("entry_date")
+  account_id      String   @map("account_id")
+  debit_amount    Float    @default(0) @map("debit_amount")
+  credit_amount   Float    @default(0) @map("credit_amount")
+  source_type     String   @map("source_type") // PROCUREMENT | PRODUCTION | SALE | EVENT | PAYMENT | GRN | BATCH | ADJUSTMENT
+  source_id       String   @map("source_id")
+  department      String   @default("GENERAL") @map("department") // PROCUREMENT | PRODUCTION | SALES | EVENTS | GENERAL
+  description     String?
+  created_at      DateTime @default(now()) @map("created_at")
+  period_id       String?  @map("period_id")
+  account         ChartOfAccount @relation(fields: [account_id], references: [id])
+  period          AccountingPeriod? @relation(fields: [period_id], references: [id])
+
+  @@map("ledger_entries")
+}
+
+model AccountingPeriod {
+  id              String   @id @default(cuid())
+  period_month    String   @map("period_month") // YYYY-MM format
+  start_date      DateTime @map("start_date")
+  end_date        DateTime @map("end_date")
+  status          String   @default("OPEN") @map("status") // OPEN | CLOSED
+  closed_by       String?  @map("closed_by")
+  closed_at       DateTime? @map("closed_at")
+  entries         LedgerEntry[]
+
+  @@unique([period_month])
+  @@map("accounting_periods")
+}
+
+model DailySalesSummary {
+  id                      String   @id @default(cuid())
+  date                    DateTime @unique @map("date")
+  total_bottle_sales_ugx  Float    @default(0) @map("total_bottle_sales_ugx")
+  total_jerrycan_sales_ugx Float   @default(0) @map("total_jerrycan_sales_ugx")
+  total_event_sales_ugx   Float    @default(0) @map("total_event_sales_ugx")
+  total_sales_ugx         Float    @default(0) @map("total_sales_ugx")
+  created_at              DateTime @default(now()) @map("created_at")
+
+  @@map("daily_sales_summary")
+}
+
+model InventoryItem {
+  id              String   @id @default(cuid())
+  name            String
+  category        String   // Fruit, Packaging, Additive, Other
+  unit            String   // kg, liters, pieces
+  currentStock    Float    @default(0)
+  unitCost        Float
+  lowStockThreshold Float  @default(10)
+  expiryDate      DateTime?
+  supplier        String?
+  lastRestocked   DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  recipeIngredients RecipeIngredient[]
+  batchMaterials   BatchRawMaterial[]
+}
+
+model Recipe {
+  id              String   @id @default(cuid())
+  productId       String   @unique
+  product         Product  @relation(fields: [productId], references: [id])
+  baseQuantity    Float    @default(1) // per liter
+  ingredients     RecipeIngredient[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id              String   @id @default(cuid())
+  recipeId        String
+  inventoryItemId String
+  quantity        Float    // quantity needed per baseQuantity
+  recipe          Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id])
+
+  @@map("recipe_ingredients")
+}
+
+// Procurement Department Models - Production-Grade Schema
+
+model Supplier {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  supplier_type     String   @map("supplier_type") // FRUIT | PACKAGING | EQUIPMENT | SERVICES
+  contact_person    String   @map("contact_person")
+  phone             String
+  email             String?
+  payment_terms     String   @map("payment_terms")
+  default_unit_price Float? @map("default_unit_price")
+  status            String   @default("ACTIVE") // ACTIVE | SUSPENDED
+  created_at        DateTime @default(now()) @map("created_at")
+  purchase_orders   PurchaseOrder[]
+  supplier_payments SupplierPayment[]
+
+  @@map("suppliers")
+}
+
+model PurchaseRequisition {
+  id                      String   @id @default(cuid())
+  requisition_date        DateTime @map("requisition_date")
+  requested_by            String   @map("requested_by")
+  item_name               String   @map("item_name")
+  category                String
+  quantity_requested      Float    @map("quantity_requested")
+  required_date           DateTime @map("required_date")
+  reason                  String?
+  linked_production_plan_id String? @map("linked_production_plan_id")
+  status                  String   @default("PENDING") @map("status") // PENDING | APPROVED | REJECTED
+  created_at              DateTime @default(now()) @map("created_at")
+
+  @@map("purchase_requisitions")
+}
+
+model PurchaseOrder {
+  id                    String   @id @default(cuid())
+  po_number             String   @unique @map("po_number")
+  supplier_id           String   @map("supplier_id")
+  order_date            DateTime @map("order_date")
+  expected_delivery_date DateTime @map("expected_delivery_date")
+  approved_by           String   @map("approved_by")
+  total_value_ugx       Float    @map("total_value_ugx")
+  status                String   @default("OPEN") @map("status") // OPEN | PARTIAL | RECEIVED | CANCELLED
+  created_at            DateTime @default(now()) @map("created_at")
+  supplier              Supplier @relation(fields: [supplier_id], references: [id])
+  items                 PurchaseOrderItem[]
+  goods_receipts        GoodsReceipt[]
+  supplier_payments      SupplierPayment[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id                String   @id @default(cuid())
+  po_id             String   @map("po_id")
+  item_name         String   @map("item_name")
+  quantity_ordered  Float    @map("quantity_ordered")
+  unit_price_ugx    Float    @map("unit_price_ugx")
+  total_price_ugx   Float    @map("total_price_ugx")
+  purchase_order    PurchaseOrder @relation(fields: [po_id], references: [id])
+
+  @@map("purchase_order_items")
+}
+
+model GoodsReceipt {
+  id                String   @id @default(cuid())
+  po_id             String   @map("po_id")
+  received_date     DateTime @map("received_date")
+  received_by       String   @map("received_by")
+  status            String   @map("status") // ACCEPTED | PARTIAL | REJECTED
+  remarks           String?
+  created_at        DateTime @default(now()) @map("created_at")
+  purchase_order    PurchaseOrder @relation(fields: [po_id], references: [id])
+  items             GoodsReceiptItem[]
+
+  @@map("goods_receipts")
+}
+
+model GoodsReceiptItem {
+  id                String   @id @default(cuid())
+  grn_id            String   @map("grn_id")
+  item_name         String   @map("item_name")
+  quantity_received Float    @map("quantity_received")
+  accepted          Boolean  @default(true)
+  goods_receipt     GoodsReceipt @relation(fields: [grn_id], references: [id])
+
+  @@map("goods_receipt_items")
+}
+
+model SupplierPayment {
+  id                String   @id @default(cuid())
+  supplier_id       String   @map("supplier_id")
+  po_id             String   @map("po_id")
+  payment_date      DateTime @map("payment_date")
+  amount_ugx        Float    @map("amount_ugx")
+  payment_method    String   @map("payment_method") // CASH | BANK | MOBILE_MONEY
+  reference_number  String?  @map("reference_number")
+  status            String   @default("PAID") @map("status") // PAID | PARTIAL
+  created_at        DateTime @default(now()) @map("created_at")
+  supplier          Supplier @relation(fields: [supplier_id], references: [id])
+  purchase_order    PurchaseOrder @relation(fields: [po_id], references: [id])
+
+  @@map("supplier_payments")
+}
+
+// Human Resource Module
+model Department {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  employees   Employee[]
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  @@map("departments")
+}
+
+model Role {
+  id          String     @id @default(cuid())
+  name        String
+  permissions String     @default("[]") // JSON stored as string for SQLite
+  employees   Employee[]
+
+  @@map("roles")
+}
+
+model Employee {
+  id              String         @id @default(cuid())
+  employeeNo      String         @unique @map("employee_no")
+  firstName       String         @map("first_name")
+  lastName        String         @map("last_name")
+  phone           String
+  email           String?
+  departmentId    String         @map("department_id")
+  roleId          String         @map("role_id")
+  employmentType  String         @map("employment_type") // FULL_TIME | PART_TIME | CASUAL
+  hireDate        DateTime       @map("hire_date")
+  baseSalary      Int            @map("base_salary")
+  status          String         @default("ACTIVE") @map("status") // ACTIVE | SUSPENDED | TERMINATED
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  department      Department   @relation(fields: [departmentId], references: [id])
+  role            Role         @relation(fields: [roleId], references: [id])
+  attendance      Attendance[]
+  payrolls        Payroll[]
+
+  @@map("employees")
+}
+
+model Attendance {
+  id          String   @id @default(cuid())
+  employeeId  String   @map("employee_id")
+  date        DateTime
+  checkIn     DateTime? @map("check_in")
+  checkOut    DateTime? @map("check_out")
+  hoursWorked Float    @default(0) @map("hours_worked")
+
+  employee    Employee @relation(fields: [employeeId], references: [id])
+
+  @@map("attendance")
+}
+
+model Payroll {
+  id          String        @id @default(cuid())
+  employeeId  String        @map("employee_id")
+  month       String        @map("month") // YYYY-MM
+  grossPay    Int           @map("gross_pay")
+  deductions  Int           @default(0) @map("deductions")
+  netPay      Int           @map("net_pay")
+  status      String        @default("PENDING") @map("status") // PENDING | PAID
+  processedAt DateTime?     @map("processed_at")
+
+  employee    Employee @relation(fields: [employeeId], references: [id])
+
+  @@map("payrolls")
+}

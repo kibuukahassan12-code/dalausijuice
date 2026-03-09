@@ -1,0 +1,255 @@
+.adminContainer {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8fafc;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: var(--color-plum);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.sidebarHeader {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebarHeader h2 {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-orange);
+}
+
+.nav {
+    padding: 2rem 0;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+/* Custom scrollbar styling */
+.nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-weight: 500;
+    gap: 1rem;
+}
+
+.navLink:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.navLink.active {
+    background-color: var(--color-orange);
+    color: white;
+}
+
+.sidebarFooter {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.logoutBtn {
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mainContent {
+    flex: 1;
+    margin-left: 260px;
+    display: flex;
+    flex-direction: column;
+}
+
+.topHeader {
+    height: 70px;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.topHeader h3 {
+    font-family: var(--font-outfit);
+    color: var(--color-plum);
+}
+
+.pageContent {
+    padding: 2rem;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .sidebarHeader h2,
+    .navLink span:not(.icon) {
+        display: none;
+    }
+
+    .mainContent {
+        margin-left: 70px;
+    }
+}
+
+.topHeaderContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.notificationCenter {
+    position: relative;
+}
+
+.bellBtn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: relative;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.bellBtn:hover {
+    background: #f1f5f9;
+}
+
+.badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border: 2px solid white;
+}
+
+.notificationDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    margin-top: 1rem;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.dropdownHeader {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdownHeader h4 {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-plum);
+}
+
+.notificationList {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notificationItem {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    gap: 1rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.notificationItem:hover {
+    background: #f8fafc;
+}
+
+.notiIcon {
+    font-size: 1.25rem;
+}
+
+.notiContent h5 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.8125rem;
+    color: var(--color-plum);
+}
+
+.notiContent p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.emptyNoti {
+    padding: 2rem;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+}

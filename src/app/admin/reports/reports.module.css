@@ -1,0 +1,373 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.header h1 {
+    color: var(--color-plum);
+    font-family: var(--font-outfit);
+    margin: 0;
+}
+
+.viewToggle {
+    display: flex;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+}
+
+.viewToggle button {
+    padding: 0.5rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #64748b;
+}
+
+.activeTab {
+    background: white !important;
+    color: var(--color-plum) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.presets {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.presets button {
+    padding: 0.4rem 0.8rem;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.presets button:hover {
+    background: #e2e8f0;
+}
+
+.datePicker {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.datePicker input {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+}
+
+.exportBtn {
+    background: var(--color-plum);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.reportGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.card h3 {
+    font-size: 0.875rem;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.card .value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+}
+
+.revenue .value {
+    color: var(--color-plum);
+}
+
+.expense .value {
+    color: #ef4444;
+}
+
+.profit .value {
+    color: #059669;
+}
+
+.outstanding .value {
+    color: var(--color-orange);
+}
+
+.breakdown {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.footer,
+.note,
+.progress {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.analysisSection h2 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: var(--color-plum);
+}
+
+.analysisBox {
+    background: #eff6ff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border-left: 4px solid #3b82f6;
+}
+
+.analysisBox p {
+    margin: 0;
+    color: #1e40af;
+    line-height: 1.6;
+}
+
+.loading {
+    text-align: center;
+    padding: 4rem;
+    color: #64748b;
+}
+
+/* MD Snapshot Styles */
+.snapshotView {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.snapshotHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.snapshotHeader h2 {
+    color: var(--color-plum);
+    margin: 0 0 0.5rem 0;
+}
+
+.timestamp {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.executiveSummary {
+    background: linear-gradient(135deg, #3e1c33 0%, #1e293b 100%);
+    padding: 2rem;
+    border-radius: 1rem;
+    color: white;
+}
+
+.executiveSummary h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-orange);
+}
+
+.executiveSummary p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.insightsSection {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.insightsSection h3 {
+    color: var(--color-plum);
+    margin: 0 0 1.5rem 0;
+}
+
+.insightsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.insightCard {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.kpiCard {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+}
+
+.kpiIcon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.kpiContent {
+    flex: 1;
+}
+
+.kpiContent h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.05em;
+}
+
+.kpiValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-plum);
+    margin: 0 0 0.5rem 0;
+}
+
+.kpiTrend {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.kpiSubtext {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.healthBadge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.healthy {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.caution {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.critical {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.alertsSection {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.alertsSection h3 {
+    color: var(--color-plum);
+    margin: 0 0 1.5rem 0;
+}
+
+.alertsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.alertBox {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.alertBox h4 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: var(--color-plum);
+}
+
+.alertBox ul {
+    margin: 0;
+    padding: 0 0 0 1.25rem;
+    list-style: none;
+}
+
+.alertBox li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.alertBox li:last-child {
+    border-bottom: none;
+}

@@ -1,0 +1,395 @@
+/* Document page — compact single-page fit, Dalausi branding */
+.documentPage {
+    background: #fff;
+    padding: 0;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #1a202c;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.35;
+    /* Keep content on one page when printed/PDF */
+    page-break-inside: avoid;
+}
+
+/* Top header: compact */
+.docTopHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 14px 20px 12px;
+    border-bottom: 2px solid var(--color-plum);
+    gap: 16px;
+}
+
+.docTopTitleWrap {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.docTopTitle {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-plum);
+    letter-spacing: 0.02em;
+}
+
+.docTopSubtitle {
+    margin: 2px 0 0;
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.docDecor {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.docDecorLine {
+    display: inline-block;
+    width: 18px;
+    height: 1.5px;
+    background: var(--color-orange);
+    border-radius: 1px;
+}
+
+.docDecorDot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-orange);
+}
+
+.brandBlock {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.docLogo {
+    display: block;
+    width: 72px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 2px;
+}
+
+.brandName {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-plum);
+}
+
+.slogan {
+    margin: 0;
+    font-size: 0.7rem;
+    color: var(--color-orange);
+    font-weight: 600;
+}
+
+/* Invoice block: compact */
+.docInvoiceBlock {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    padding: 12px 20px 10px;
+    align-items: start;
+}
+
+.docToBlock {
+    min-width: 0;
+}
+
+.docTypeHeading {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-plum);
+}
+
+.docToLabel {
+    margin: 0 0 2px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.docToName {
+    margin: 0 0 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.docToContact {
+    margin: 0 0 8px;
+    font-size: 0.8125rem;
+    color: #64748b;
+}
+
+.eventDetailsBlock {
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.eventDetailsTitle {
+    margin: 0 0 2px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-plum);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.eventDetail {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: #334155;
+}
+
+.docMetaBlock {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.docMetaRow {
+    margin: 2px 0;
+    font-size: 0.8125rem;
+    color: #334155;
+}
+
+.docMetaRow strong {
+    color: #64748b;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+/* Table: compact rows */
+.docTableWrap {
+    padding: 0 20px 4px;
+    overflow-x: auto;
+}
+
+.docTable {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 480px;
+}
+
+.docTable thead tr {
+    background: var(--color-plum);
+    color: #fff;
+}
+
+.docTable th {
+    padding: 6px 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+    border: none;
+}
+
+.docTable th.colNo,
+.docTable td.colNo {
+    width: 36px;
+    text-align: center;
+}
+
+.docTable th.colDesc,
+.docTable td.colDesc {
+    min-width: 140px;
+}
+
+.docTable th.colPrice,
+.docTable td.colPrice,
+.docTable th.colQty,
+.docTable td.colQty,
+.docTable th.colTotal,
+.docTable td.colTotal {
+    text-align: right;
+}
+
+.docTable th.colTotal,
+.docTable td.colTotal {
+    min-width: 88px;
+}
+
+.docTable tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.docTable td {
+    padding: 6px 10px;
+    font-size: 0.8125rem;
+    color: #334155;
+}
+
+.docTable tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Summary: compact */
+.summaryWrap {
+    margin: 0 20px 12px;
+    max-width: calc(100% - 40px);
+}
+
+.summaryBlock {
+    text-align: right;
+    margin-bottom: 6px;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 1px 0;
+    font-size: 0.8125rem;
+    color: #475569;
+}
+
+.summaryRow span:last-child {
+    min-width: 96px;
+    text-align: right;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.totalBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--color-plum);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 0 0 4px 4px;
+}
+
+.totalBar span:last-child {
+    font-size: 1rem;
+}
+
+/* Footer: compact two columns */
+.docFooterGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 12px 20px 10px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.docFooterLeft {
+    min-width: 0;
+}
+
+.footerBlock {
+    margin-bottom: 8px;
+}
+
+.footerBlock:last-child {
+    margin-bottom: 0;
+}
+
+.footerBlockTitle {
+    margin: 0 0 2px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-plum);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.footerText {
+    margin: 0;
+    font-size: 0.7rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.docFooterRight {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.thanksText {
+    margin: 0 0 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-plum);
+}
+
+.signatureBlock {
+    width: 160px;
+}
+
+.sigLine {
+    width: 100%;
+    height: 1px;
+    background: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.sigLabel {
+    margin: 0;
+    font-size: 0.65rem;
+    color: #64748b;
+    text-align: center;
+}
+
+/* Full-width footer bar: compact */
+.docFooterBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--color-plum);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.footerBarText {
+    opacity: 0.95;
+}
+
+.footerBarDivider {
+    opacity: 0.6;
+    font-weight: 300;
+}
+
+@media print {
+    .documentPage {
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        max-width: none;
+        height: auto;
+        overflow: visible;
+    }
+    .docTable tbody tr:hover {
+        background: transparent;
+    }
+    /* Force single page: no breaks inside main content */
+    .documentPage {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+}

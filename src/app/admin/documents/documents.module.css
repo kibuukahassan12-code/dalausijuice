@@ -1,0 +1,346 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.typeSelector {
+    display: flex;
+    background: #e2e8f0;
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+}
+
+.typeBtn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: #64748b;
+}
+
+.typeBtn.active {
+    background: white;
+    color: var(--color-plum);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.editor {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.section {
+    padding: 2rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.section h3 {
+    color: var(--color-plum);
+    margin-bottom: 1.5rem;
+    font-size: 1.125rem;
+}
+
+.inputGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inputGroup label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.inputGroup input {
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.addItemBtn {
+    padding: 0.5rem 1rem;
+    background: var(--color-orange);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.itemRow {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.itemDesc {
+    flex: 4;
+}
+
+.itemQty {
+    flex: 1;
+}
+
+.itemPrice {
+    flex: 2;
+}
+
+.itemRow input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+}
+
+.removeBtn {
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.25rem;
+}
+
+.summary {
+    text-align: right;
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+}
+
+.actions {
+    padding: 2rem;
+    background: #f8fafc;
+    text-align: right;
+}
+
+.previewBtn {
+    padding: 1rem 2rem;
+    background: var(--color-plum);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Preview Mode */
+.previewMode {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: #525659;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+.previewControls {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.backBtn {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    color: #374151;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.printBtn {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-orange);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.documentPage {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    padding: 4rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    min-height: 1056px;
+    /* A4 Ratioapprox */
+    display: flex;
+    flex-direction: column;
+}
+
+.docHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+    border-bottom: 3px solid var(--color-plum);
+    padding-bottom: 2rem;
+}
+
+.brandInfo h2 {
+    color: var(--color-plum);
+    margin: 0.5rem 0;
+}
+
+.brandInfo p {
+    color: var(--color-orange);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.docMeta {
+    text-align: right;
+}
+
+.docMeta h1 {
+    font-size: 2.5rem;
+    color: var(--color-plum);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.addressGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.addressGrid h3 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+}
+
+.docTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 4rem;
+    flex: 1;
+}
+
+.docTable th {
+    background: #f8fafc;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--color-plum);
+    color: var(--color-plum);
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.docTable td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.textRight {
+    text-align: right !important;
+}
+
+.grandTotal td {
+    border-top: 2px solid var(--color-plum);
+    background: #fdf2f8;
+    /* Very light plum tint */
+    font-size: 1.25rem;
+    color: var(--color-plum);
+}
+
+.docFooter {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 2rem;
+}
+
+.paymentInfo h3 {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-plum);
+}
+
+.thanks {
+    text-align: right;
+}
+
+.thanks p {
+    font-weight: 600;
+    margin-bottom: 3rem;
+    color: var(--color-plum);
+}
+
+.signatureLine {
+    border-top: 1px solid #000;
+    width: 200px;
+    padding-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printable-document,
+    #printable-document * {
+        visibility: visible;
+    }
+
+    #printable-document {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .previewControls {
+        display: none;
+    }
+}

@@ -1,48 +1,43 @@
 .header {
-    position: sticky;
+    background: transparent;
+    position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 100;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--color-gray-100);
-    padding: 1rem 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    min-height: var(--header-height);
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 1.5rem;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .logo {
-    font-family: var(--font-outfit);
-    font-weight: 900;
-    font-size: 1.5rem;
-    color: var(--color-plum);
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-}
-
-.logo span {
-    color: var(--color-orange);
 }
 
 .nav {
     display: flex;
-    gap: 2rem;
     align-items: center;
+    gap: 2.5rem;
 }
 
 .link {
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: color 0.2s;
+    font-weight: 600;
+    color: white;
+    transition: color 0.2s ease;
+    font-size: 1rem;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .link:hover {
@@ -52,20 +47,137 @@
 .cta {
     background-color: var(--color-plum);
     color: white;
-    padding: 0.6rem 1.25rem;
+    padding: 0.6rem 1.5rem;
     border-radius: 9999px;
     font-weight: 600;
-    transition: transform 0.2s, background-color 0.2s;
+    transition: all 0.3s ease;
 }
 
 .cta:hover {
+    background-color: var(--color-plum-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(62, 28, 51, 0.2);
+}
+
+.ctaOrange {
     background-color: var(--color-orange);
-    transform: translateY(-1px);
+    color: white;
+}
+
+.ctaOrange:hover {
+    background-color: var(--color-orange-light);
+    box-shadow: 0 4px 14px 0 rgba(255, 140, 0, 0.39);
+}
+
+.mobileMenuBtn {
+    display: none;
 }
 
 @media (max-width: 768px) {
     .nav {
         display: none;
-        /* Mobile menu to be implemented later */
+    }
+
+    .mobileMenuBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 101;
+    }
+
+    .hamburger {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: white;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+        content: '';
+        position: absolute;
+        width: 24px;
+        height: 2px;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger::before {
+        top: -8px;
+    }
+
+    .hamburger::after {
+        top: 8px;
+    }
+
+    .hamburger.open {
+        background: transparent;
+    }
+
+    .hamburger.open::before {
+        transform: rotate(45deg);
+        top: 0;
+    }
+
+    .hamburger.open::after {
+        transform: rotate(-45deg);
+        top: 0;
+    }
+
+    .mobileMenu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--color-plum);
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 100;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .mobileLink {
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .mobileLink:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--color-orange);
+    }
+
+    .mobileCta {
+        background: var(--color-orange);
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .mobileCta:hover {
+        background: var(--color-orange-light);
     }
 }

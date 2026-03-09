@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project for **Dalausi Juice ERP** – juice manufacturing and sales management.
+
+## Database Setup
+
+1. Apply migrations: `npx prisma migrate deploy`
+2. Seed database: `npx prisma db seed`
+3. Reset & re-seed: `npx prisma migrate reset`
+
+Sample data: customers, suppliers, POs, GRNs, supplier payments, events, orders, production batches, expenses, inventory, and ledger entries.
 
 ## Getting Started
 

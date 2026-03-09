@@ -1,0 +1,96 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-off-white);
+    padding: 2rem;
+}
+
+.form {
+    background: white;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.logoContainer {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.form h1 {
+    font-size: 2rem;
+    color: var(--color-plum);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-outfit);
+}
+
+.form p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.error {
+    background-color: #fee2e2;
+    color: #ef4444;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.inputGroup {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.inputGroup label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-plum);
+    margin-bottom: 0.5rem;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #eee;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.inputGroup input:focus {
+    outline: none;
+    border-color: var(--color-orange);
+}
+
+.button {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--color-plum);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.button:hover:not(:disabled) {
+    background-color: var(--color-plum-light);
+    transform: translateY(-2px);
+}
+
+.button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

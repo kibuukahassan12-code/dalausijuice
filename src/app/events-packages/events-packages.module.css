@@ -1,0 +1,391 @@
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex: 1;
+}
+
+/* Hero Section */
+.hero {
+    height: 70vh;
+    min-height: 500px;
+    background-color: var(--color-plum);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+}
+
+.heroOverlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/orange-splash-hero.png');
+    background-size: 200% auto;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    mix-blend-mode: lighten;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.heroOverlay::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    height: 1100px;
+    background-image: url('/images/orange-splash-background.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.heroContent {
+    max-width: 700px;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 2rem;
+}
+
+.heroContent h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-outfit);
+}
+
+.highlight {
+    color: var(--color-orange);
+}
+
+.heroContent p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Sections */
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+    font-size: 2.5rem;
+    color: var(--color-plum);
+    margin-bottom: 1rem;
+}
+
+.sectionHeader h2 span {
+    color: var(--color-orange);
+}
+
+.services {
+    padding: 6rem 0;
+    background: var(--color-off-white);
+}
+
+.serviceGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+}
+
+.serviceCard {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.serviceCard:hover {
+    transform: translateY(-10px);
+}
+
+.serviceIcon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.serviceCard h3 {
+    margin-bottom: 1rem;
+    color: var(--color-plum);
+}
+
+/* Packages */
+.packages {
+    padding: 6rem 0;
+}
+
+.packageGridFirst {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.packageGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .packageGridFirst {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+}
+
+.packageCard {
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.packageImage {
+    height: 300px;
+    position: relative;
+    background-color: var(--color-off-white);
+    overflow: hidden;
+}
+
+.packageImage img {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.packageCard:hover .packageImage img {
+    transform: scale(1.08);
+}
+
+.packageBody {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.packageBody h3 {
+    font-size: 1.75rem;
+    color: var(--color-plum);
+    margin-bottom: 0.5rem;
+}
+
+.volume {
+    color: var(--color-orange);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-plum);
+    margin-bottom: 1.5rem;
+}
+
+.features {
+    list-style: none;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.features li::before {
+    content: "✓";
+    color: var(--color-green);
+    font-weight: bold;
+    margin-right: 0.75rem;
+}
+
+.packageBtn {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    background: var(--color-plum);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    margin-top: auto;
+}
+
+.packageBtn:hover {
+    background: var(--color-orange);
+}
+
+/* Custom Quote */
+.customQuote {
+    padding: 6rem 0;
+}
+
+.quoteBox {
+    background: var(--color-plum);
+    padding: 4rem;
+    border-radius: 2rem;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.quoteBox::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 50%;
+    background-image: url('/images/juice-splash-overlay.png');
+    background-size: cover;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.quoteBox h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.quoteBox p {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-inline: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 768px) {
+    .quoteBox {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .actionButtons {
+        flex-direction: column;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .hero {
+        height: 50vh;
+        min-height: 350px;
+    }
+
+    .heroContent h1 {
+        font-size: 1.75rem;
+    }
+
+    .heroContent p {
+        font-size: 1rem;
+    }
+
+    .sectionHeader h2 {
+        font-size: 1.75rem;
+    }
+
+    .services {
+        padding: 3rem 0;
+    }
+
+    .serviceGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .serviceCard {
+        padding: 2rem 1.5rem;
+    }
+
+    .packages {
+        padding: 3rem 0;
+    }
+
+    .packageGridFirst,
+    .packageGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .packageImage {
+        height: 200px;
+    }
+
+    .packageBody {
+        padding: 1.5rem;
+    }
+
+    .packageBody h3 {
+        font-size: 1.4rem;
+    }
+
+    .price {
+        font-size: 1.6rem;
+    }
+
+    .customQuote {
+        padding: 3rem 0;
+    }
+
+    .quoteBox {
+        padding: 2rem 1rem;
+        border-radius: 1.25rem;
+    }
+
+    .quoteBox h2 {
+        font-size: 1.6rem;
+    }
+
+    .quoteBox p {
+        font-size: 1rem;
+    }
+
+    .actionButtons {
+        gap: 1rem;
+    }
+}

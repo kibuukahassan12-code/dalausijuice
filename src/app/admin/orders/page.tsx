@@ -1,0 +1,370 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import styles from "./orders.module.css";
+import ExportButton from "@/components/Admin/ExportButton";
+import {
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    PieChart, Pie, Cell, Legend
+} from "recharts";
+
+type OrderDashboard = {
+    orders: any[];
+    trend: { date: string; amount: number }[];
+    productDistribution: { name: string; value: number }[];
+    stats: {
+        totalOrders: number;
+        totalRevenue: number;
+        pendingApproval: number;
+        cancelledCount: number;
+    };
+};
+
+export default function OrdersPage() {
+    const [dashboard, setDashboard] = useState<OrderDashboard | null>(null);
+    const [products, setProducts] = useState<any[]>([]);
+    const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
+
+    // Form State
+    const [customerName, setCustomerName] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("");
+    const [orderDate, setOrderDate] = useState(new Date().toISOString().split("T")[0]);
+    const [orderType, setOrderType] = useState("Delivery");
+    const [transportFee, setTransportFee] = useState("0");
+    const [selectedItems, setSelectedItems] = useState<{ productId: string, quantity: number, unitPrice: number }[]>([]);
+    const [paymentMethodId, setPaymentMethodId] = useState("");
+    const [amountPaid, setAmountPaid] = useState("");
+
+    const [loading, setLoading] = useState(true);
+    const [formLoading, setFormLoading] = useState(false);
+    const [period, setPeriod] = useState("today");
+
+    const COLORS = ['#3e1c33', '#f97316', '#10b981', '#3b82f6', '#ef4444'];
+
+    useEffect(() => {
+        fetchDashboard();
+        fetchProducts();
+        fetchPaymentMethods();
+    }, [period]);
+
+    const fetchDashboard = async () => {
+        const res = await fetch(`/api/admin/orders/dashboard?period=${period}`);
+        if (res.ok) setDashboard(await res.json());
+        setLoading(false);
+    };
+
+    const fetchProducts = async () => {
+        const res = await fetch("/api/admin/products");
+        const data = await res.json();
+        if (Array.isArray(data)) setProducts(data);
+    };
+
+    const fetchPaymentMethods = async () => {
+        const res = await fetch("/api/admin/payment-methods");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            setPaymentMethods(data);
+            if (data.length > 0) setPaymentMethodId(data[0].id);
+        }
+    };
+
+    const addItem = () => {
+        if (products.length > 0) {
+            setSelectedItems([...selectedItems, { productId: products[0].id, quantity: 1, unitPrice: products[0].unitPrice }]);
+        }
+    };
+
+    const updateItem = (index: number, field: string, value: any) => {
+        const nextItems = [...selectedItems];
+        if (field === "productId") {
+            const product = products.find(p => p.id === value);
+            nextItems[index].productId = value;
+            nextItems[index].unitPrice = product?.unitPrice || 10000;
+        } else {
+            (nextItems[index] as any)[field] = value;
+        }
+        setSelectedItems(nextItems);
+    };
+
+    const removeItem = (index: number) => {
+        setSelectedItems(selectedItems.filter((_, i) => i !== index));
+    };
+
+    const subtotal = selectedItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+    const totalAmount = subtotal + parseFloat(transportFee || "0");
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (selectedItems.length === 0) {
+            alert("Please add at least one flavor");
+            return;
+        }
+        setFormLoading(true);
+
+        try {
+            const res = await fetch("/api/admin/orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    customerName, customerPhone, orderDate, orderType, transportFee,
+                    items: selectedItems, paymentMethodId, amountPaid: amountPaid || "0"
+                }),
+            });
+
+            if (res.status === 409) {
+                const error = await res.json();
+                if (confirm(`${error.message}\n\nDo you want to record it anyway?`)) {
+                    await fetch("/api/admin/orders", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            customerName, customerPhone, orderDate, orderType, transportFee,
+                            items: selectedItems, paymentMethodId, amountPaid: amountPaid || "0", force: true
+                        }),
+                    });
+                    resetForm();
+                }
+            } else if (res.ok) {
+                resetForm();
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setFormLoading(false);
+        }
+    };
+
+    const resetForm = () => {
+        setCustomerName("");
+        setCustomerPhone("");
+        setTransportFee("0");
+        setSelectedItems([]);
+        setAmountPaid("");
+        fetchDashboard();
+    };
+
+    const handleAction = async (orderId: string, action: "APPROVE" | "CANCEL") => {
+        if (!confirm(`${action === 'APPROVE' ? 'Approve' : 'Cancel'} this order?`)) return;
+        try {
+            const res = await fetch("/api/admin/orders/approve", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, action }),
+            });
+            if (res.ok) fetchDashboard();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const formatCurrency = (val: any) => `UGX ${Number(val || 0).toLocaleString()}`;
+    const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString(undefined, { weekday: 'short' });
+
+    return (
+        <div className={styles.container} id="orders-dashboard">
+            <header className={styles.header}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                        <h1>Daily Client Orders</h1>
+                        <p className={styles.purpose}>
+                            <strong>Sales Ledger:</strong> Direct retail orders via Phone/WhatsApp. Linked to inventory and accounting.
+                        </p>
+                    </div>
+                    <ExportButton elementId="orders-dashboard" filename={`Orders_Report_${new Date().toISOString().split('T')[0]}`} />
+                </div>
+            </header>
+
+            {!loading && dashboard && (
+                <section className={styles.kpiSection}>
+                    <div className={styles.kpiGrid}>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiIcon}>🥤</div>
+                            <div className={styles.kpiContent}>
+                                <h3 className={styles.kpiLabel}>Period Sales</h3>
+                                <p className={styles.kpiValue}>{formatCurrency(dashboard.stats.totalRevenue)}</p>
+                                <span className={styles.kpiUnit}>{dashboard.stats.totalOrders} successful orders</span>
+                            </div>
+                        </div>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiIcon}>⏳</div>
+                            <div className={styles.kpiContent}>
+                                <h3 className={styles.kpiLabel}>Pending Approval</h3>
+                                <p className={styles.kpiValue} style={{ color: "#f97316" }}>{dashboard.stats.pendingApproval}</p>
+                                <span className={styles.kpiUnit}>Orders awaiting ledger post</span>
+                            </div>
+                        </div>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiIcon}>🚫</div>
+                            <div className={styles.kpiContent}>
+                                <h3 className={styles.kpiLabel}>Cancelled</h3>
+                                <p className={styles.kpiValue} style={{ color: "#ef4444" }}>{dashboard.stats.cancelledCount}</p>
+                                <span className={styles.kpiUnit}>Excluded from revenue</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "2rem", marginTop: "2rem" }}>
+                        <div className={styles.kpiCard} style={{ flexDirection: "column", height: "350px", background: "white" }}>
+                            <h3 className={styles.sectionTitle} style={{ fontSize: "1rem" }}>Popular Flavors (qty)</h3>
+                            <div style={{ flex: 1, width: '100%' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={dashboard.productDistribution} layout="vertical">
+                                        <XAxis type="number" hide />
+                                        <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} width={100} />
+                                        <Tooltip cursor={{ fill: '#f8fafc' }} />
+                                        <Bar dataKey="value" fill="#3e1c33" radius={[0, 4, 4, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                        <div className={styles.kpiCard} style={{ flexDirection: "column", height: "350px", background: "white" }}>
+                            <h3 className={styles.sectionTitle} style={{ fontSize: "1rem" }}>7-Day Revenue Pulse</h3>
+                            <div style={{ flex: 1, width: '100%' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={dashboard.trend}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                        <XAxis dataKey="date" tickFormatter={formatDate} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} tickFormatter={(val) => `${(val / 1000).toLocaleString()}k`} />
+                                        <Tooltip formatter={formatCurrency} cursor={{ fill: '#f8fafc' }} />
+                                        <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            <div className={styles.contentWrapper}>
+                <section className={styles.formSection}>
+                    <h2 className={styles.sectionTitle}>New Order Record</h2>
+                    <form onSubmit={handleSubmit} className={styles.form}>
+                        <div className={styles.inputGrid}>
+                            <div className={styles.inputGroup}>
+                                <label>Customer Name</label>
+                                <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} required />
+                            </div>
+                            <div className={styles.inputGroup}>
+                                <label>Phone Number</label>
+                                <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} required />
+                            </div>
+                            <div className={styles.inputGroup}>
+                                <label>Order Date</label>
+                                <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} required />
+                            </div>
+                            <div className={styles.inputGroup}>
+                                <label>Order Type</label>
+                                <select value={orderType} onChange={(e) => setOrderType(e.target.value)}>
+                                    <option value="Delivery">Delivery</option>
+                                    <option value="Pickup">Pickup</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className={styles.itemsSection}>
+                            <div className={styles.sectionHeader}>
+                                <h3 style={{ fontSize: "0.9rem", color: "var(--color-plum)" }}>Selected Flavors</h3>
+                                <button type="button" onClick={addItem} className={styles.addBtn}>+ Add Item</button>
+                            </div>
+                            {selectedItems.map((item, index) => (
+                                <div key={index} className={styles.itemRow}>
+                                    <select value={item.productId} onChange={(e) => updateItem(index, "productId", e.target.value)}>
+                                        {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                    </select>
+                                    <input type="number" value={item.quantity} onChange={(e) => updateItem(index, "quantity", parseInt(e.target.value))} min="1" />
+                                    <div className={styles.itemPrice}>{formatCurrency(item.quantity * item.unitPrice)}</div>
+                                    <button type="button" onClick={() => removeItem(index)} className={styles.removeBtn}>×</button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className={styles.financials}>
+                            <div className={styles.inputGroup}>
+                                <label>Transport Fee (UGX)</label>
+                                <input type="number" value={transportFee} onChange={(e) => setTransportFee(e.target.value)} />
+                            </div>
+                            <div className={styles.summary}>
+                                <div className={styles.summaryRow}>
+                                    <span>Total Amount:</span>
+                                    <strong style={{ color: "var(--color-plum)", fontSize: "1.2rem" }}>{formatCurrency(totalAmount)}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles.paymentSection}>
+                            <h3 style={{ fontSize: "0.9rem", color: "var(--color-plum)" }}>Payment Info</h3>
+                            <div className={styles.inputGrid}>
+                                <div className={styles.inputGroup}>
+                                    <select value={paymentMethodId} onChange={(e) => setPaymentMethodId(e.target.value)}>
+                                        {paymentMethods.map(pm => <option key={pm.id} value={pm.id}>{pm.name}</option>)}
+                                    </select>
+                                </div>
+                                <div className={styles.inputGroup}>
+                                    <input type="number" value={amountPaid} onChange={(e) => setAmountPaid(e.target.value)} placeholder="Amount Paid" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" className={styles.submitBtn} disabled={formLoading}>
+                            {formLoading ? "Recording..." : "Post Official Order"}
+                        </button>
+                    </form>
+                </section >
+
+                <section className={styles.fullWidthSection}>
+                    <div className={styles.listHeader}>
+                        <h2 className={styles.sectionTitle}>Order History</h2>
+                        <div className={styles.filterTabs}>
+                            {["today", "week", "month", "all"].map(p => (
+                                <button key={p} className={period === p ? styles.activeTab : ""} onClick={() => setPeriod(p)}>
+                                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.tableWrapper}>
+                        <table className={styles.table}>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dashboard?.orders.map((o) => (
+                                    <tr key={o.id}>
+                                        <td>{new Date(o.orderDate).toLocaleDateString()}</td>
+                                        <td>
+                                            <div style={{ fontWeight: 600 }}>{o.customer.name}</div>
+                                            <div style={{ fontSize: "0.75rem", color: "#64748b" }}>{o.customer.phone}</div>
+                                        </td>
+                                        <td>{formatCurrency(o.totalAmount)}</td>
+                                        <td>
+                                            <span className={`${styles.status} ${styles[o.status.toLowerCase().replace(/\s+/g, '_')]}`}>
+                                                {o.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {o.status === "Waiting Approval" ? (
+                                                <div className={styles.actionCell}>
+                                                    <button onClick={() => handleAction(o.id, "APPROVE")} className={styles.approveBtn}>Approve</button>
+                                                    <button onClick={() => handleAction(o.id, "CANCEL")} className={styles.cancelBtn}>Cancel</button>
+                                                </div>
+                                            ) : o.status !== "Cancelled" && (
+                                                <button onClick={() => handleAction(o.id, "CANCEL")} className={styles.cancelBtnSmall}>Cancel</button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    );
+}
