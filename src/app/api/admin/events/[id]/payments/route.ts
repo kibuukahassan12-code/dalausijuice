@@ -6,9 +6,10 @@ const prisma = new PrismaClient();
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
+        const params = await context.params;
         const eventId = params.id;
         const data = await request.json();
         const { amount, paymentMethodId, paymentDate, reference } = data;
