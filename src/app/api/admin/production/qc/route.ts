@@ -1,8 +1,8 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { postProductionQCApproval } from "@/lib/accounting";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 const PRICE_PER_LITER = 10000;
 
@@ -90,3 +90,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to create QC check" }, { status: 500 });
     }
 }
+

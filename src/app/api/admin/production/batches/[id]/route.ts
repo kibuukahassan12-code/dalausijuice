@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { postWastage } from "@/lib/accounting";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 const PRICE_PER_LITER = 10000;
 

@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 const PRICE_PER_LITER = 10000; // Business rule: 1L = 10,000 UGX
 
@@ -72,3 +72,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to create production plan" }, { status: 500 });
     }
 }
+

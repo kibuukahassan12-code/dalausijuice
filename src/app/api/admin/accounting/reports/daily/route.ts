@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 const emptyDaily = (dateStr: string) => ({
     date: dateStr,
@@ -58,3 +58,4 @@ export async function GET(request: Request) {
         return NextResponse.json(emptyDaily(dateStr));
     }
 }
+

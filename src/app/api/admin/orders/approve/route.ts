@@ -1,8 +1,8 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { postSale } from "@/lib/accounting";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function PATCH(request: Request) {
     try {
@@ -109,3 +109,4 @@ export async function PATCH(request: Request) {
         return NextResponse.json({ error: "Failed to process order" }, { status: 500 });
     }
 }
+

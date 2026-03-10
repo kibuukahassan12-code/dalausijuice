@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { postEventReversal, postEventAmountAdjustment, postEventPayment } from "@/lib/accounting";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function GET(
     request: Request,

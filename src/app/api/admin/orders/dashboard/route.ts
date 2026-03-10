@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
     try {
@@ -71,3 +71,4 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "Failed to fetch orders data" }, { status: 500 });
     }
 }
+

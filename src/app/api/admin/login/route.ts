@@ -1,9 +1,9 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { verifyPassword, encrypt } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
     try {
@@ -55,3 +55,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
+

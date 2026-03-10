@@ -1,8 +1,8 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { postEventInvoice, postEventPayment } from "@/lib/accounting";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function GET() {
     try {
@@ -152,3 +152,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to create event" }, { status: 500 });
     }
 }
+

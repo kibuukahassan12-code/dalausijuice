@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function GET() {
     try {
@@ -13,3 +13,4 @@ export async function GET() {
         return NextResponse.json({ error: "Failed to fetch payment methods" }, { status: 500 });
     }
 }
+

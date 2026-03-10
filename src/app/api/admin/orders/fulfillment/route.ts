@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 // Inventory Reservation & Fulfillment Logic
 export async function POST(request: Request) {
@@ -239,3 +239,4 @@ async function sendCustomerNotification(order: any, stage: string) {
     // }
     // await sendWhatsApp(order.customer.phone, message);
 }
+

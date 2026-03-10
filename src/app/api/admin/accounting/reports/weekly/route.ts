@@ -1,7 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 function emptyWeekly(weekStartStr: string, weekEndStr: string) {
     const days: { date: string; sales: number }[] = [];
@@ -87,3 +87,4 @@ export async function GET(request: Request) {
         return NextResponse.json(emptyWeekly(start.toISOString().split("T")[0], end.toISOString().split("T")[0]));
     }
 }
+
