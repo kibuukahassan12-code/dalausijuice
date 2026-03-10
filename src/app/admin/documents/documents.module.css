@@ -321,10 +321,6 @@
 }
 
 @media print {
-    :global(body *) {
-        visibility: hidden;
-    }
-
     #printable-document,
     #printable-document * {
         visibility: visible;
