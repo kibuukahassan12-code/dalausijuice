@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 /** Ledger entries: read-only list. No deletes – audit trail is immutable. */
 export async function GET(request: Request) {
