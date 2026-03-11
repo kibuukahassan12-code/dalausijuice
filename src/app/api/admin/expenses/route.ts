@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { postOperatingExpense } from "@/lib/accounting";
