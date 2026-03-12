@@ -1,1 +1,11 @@
-import { PrismaClient } from '@prisma/client'; let prisma; if (process.env.NODE_ENV === 'production') { prisma = new PrismaClient({ engine: 'binary' }); } else { if (!global.prisma) { global.prisma = new PrismaClient({ engine: 'binary' }); } prisma = global.prisma; } export default prisma;
+// lib/prisma.ts
+import { PrismaClient } from "@prisma/client";
+
+export const prisma = new PrismaClient({
+  engine: {
+    type: "client",
+    // Use the default Node.js adapter (required for engine "client")
+    adapter: "node"
+    // Optionally, if you have Prisma Data Platform: accelerateUrl: process.env.PRISMA_ACCELERATE_URL
+  }
+});
