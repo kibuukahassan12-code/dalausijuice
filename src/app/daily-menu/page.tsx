@@ -1,7 +1,6 @@
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import MenuProductGrid from "./MenuProductGrid";
-import CustomBox from "@/components/CustomBox/CustomBox";
 import CategorySidebar from "./CategorySidebar";
 import styles from "./daily-menu.module.css";
 
@@ -40,7 +39,6 @@ export default function MenuPage() {
                     </div>
                 </section>
 
-                <CustomBox />
             </main>
 
             <Footer />

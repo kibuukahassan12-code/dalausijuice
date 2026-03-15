@@ -3,7 +3,8 @@ const nextConfig = {
   output: "standalone",
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  experimental: { optimizePackageImports: ["recharts"] }
+  experimental: { optimizePackageImports: ["recharts"] },
+  optimizeFonts: false
 };
 
 module.exports = nextConfig;

@@ -3,7 +3,6 @@ import Footer from "@/components/Footer/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./events-packages.module.css";
-import QuoteEngine from "@/components/QuoteEngine/QuoteEngine";
 
 export const metadata = {
     title: "Events Packages | Dalausi Juice",
@@ -181,8 +180,6 @@ export default function EventsPackagesPage() {
                     </div>
                 </section>
 
-                {/* Custom Quote Engine */}
-                <QuoteEngine />
             </main>
 
             <Footer />
