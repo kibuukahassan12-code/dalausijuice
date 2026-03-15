@@ -33,7 +33,7 @@ export default function ContactPage() {
                             <div className={styles.infoCard}>
                                 <div className={styles.infoIcon}>📍</div>
                                 <h3>Visit Us</h3>
-                                <p>Wandegeya Bombo Rd,<br />Aisha Kasule building,<br />Opp Post Bank<br />Kampala, Uganda</p>
+                                <p>Wandegeya Bombo Rd,<br />Aisha Kasule building,<br />opp Eco Bank<br />Kampala, Uganda</p>
                             </div>
                             <div className={styles.infoCard}>
                                 <div className={styles.infoIcon}>📞</div>
@@ -90,7 +90,7 @@ export default function ContactPage() {
                                 <h2 className={styles.sectionTitle}>Find Us on <span>Map</span></h2>
                                 <div className={styles.mapWrapper}>
                                     <iframe
-                                        src="https://maps.google.com/maps?q=Wandegeya+Bombo+Road+Opp+Post+Bank+Kampala+Uganda&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                                        src="https://maps.google.com/maps?q=Wandegeya+Bombo+Road+Opp+Eco+Bank+Kampala+Uganda&t=&z=16&ie=UTF8&iwloc=&output=embed"
                                         width="100%"
                                         height="100%"
                                         style={{ border: 0 }}
@@ -101,7 +101,7 @@ export default function ContactPage() {
                                     />
                                 </div>
                                 <a
-                                    href="https://www.google.com/maps/search/?api=1&query=Wandegeya+Bombo+Road,+Aisha+Kasule+building,+Opp+Post+Bank,+Kampala,+Uganda"
+                                    href="https://www.google.com/maps/search/?api=1&query=Wandegeya+Bombo+Road,+Aisha+Kasule+building,+Opp+Eco+Bank,+Kampala,+Uganda"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles.mapLink}
@@ -124,7 +124,7 @@ export default function ContactPage() {
                             </div>
                             <div className={styles.faqItem}>
                                 <h4>Can I pick up my order?</h4>
-                                <p>Yes! Visit us at Wandegeya Bombo Rd, Aisha Kasule building, Opp Post Bank for store pickup.</p>
+                                <p>Yes! Visit us at Wandegeya Bombo Rd, Aisha Kasule building, opp Eco Bank for store pickup.</p>
                             </div>
                             <div className={styles.faqItem}>
                                 <h4>Do you cater for events?</h4>

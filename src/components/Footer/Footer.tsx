@@ -27,7 +27,7 @@ export default function Footer() {
                     <div className={styles.column}>
                         <h3>Contact Us</h3>
                         <div className={styles.contactInfo}>
-                            <p>Wandegeya Bombo Rd,<br />Aisha Kasule building,<br />Opp Post Bank</p>
+                            <p>Wandegeya Bombo Rd,<br />Aisha Kasule building,<br />opp Eco Bank</p>
                             <p>+256 702 071 497</p>
                             <p>+256 776 071 497</p>
                             <p>info@dalausijuice.com</p>

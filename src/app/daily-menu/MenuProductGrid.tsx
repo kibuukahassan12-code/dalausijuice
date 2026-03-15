@@ -24,6 +24,52 @@ const FLAVOR_IMAGES: Record<string, string> = {
     "Watermelon": "/images/watermelon_juice.png",
 };
 
+// Featured products from hero page - these should always appear in the menu
+const FEATURED_PRODUCTS = [
+    {
+        id: "featured-passion-fruit",
+        name: "Passion Fruit Juice",
+        description: "1 Litre",
+        price: 10000,
+        image: "/images/passion_juice.png",
+    },
+    {
+        id: "featured-mango",
+        name: "Mango Juice",
+        description: "1 Litre",
+        price: 10000,
+        image: "/images/mango_bottle.png",
+    },
+    {
+        id: "featured-pineapple",
+        name: "Pineapple Mint Juice",
+        description: "1 Litre",
+        price: 10000,
+        image: "/images/pineapple_mint.png",
+    },
+    {
+        id: "featured-milk-meld",
+        name: "Milk Meld",
+        description: "1 Litre",
+        price: 10000,
+        image: "/images/milk_meld.png",
+    },
+    {
+        id: "featured-watermelon",
+        name: "Watermelon Juice",
+        description: "1 Litre",
+        price: 10000,
+        image: "/images/watermelon_juice.png",
+    },
+    {
+        id: "featured-mixed-berry",
+        name: "Mixed Berry Blast",
+        description: "1 Litre",
+        price: 10000,
+        image: "/images/soursop_juice.png",
+    },
+];
+
 function getImageForFlavor(name: string, imageUrl?: string | null): string {
     if (imageUrl) return imageUrl;
     return FLAVOR_IMAGES[name] ?? "/images/dalausi-logo.png";
@@ -60,20 +106,38 @@ export default function MenuProductGrid() {
                 // 2. If Open, fetch products
                 const res = await fetch("/api/admin/products?menu=true", { cache: "no-store" });
                 const data = await res.json();
+                
+                // 3. Map API products
+                let apiProducts: Product[] = [];
                 if (res.ok && Array.isArray(data)) {
-                    setProducts(
-                        data.map((p: { id: string; name: string; unitPrice: number; imageUrl?: string | null }) => ({
-                            id: p.id,
-                            name: p.name,
-                            description: "1 Litre",
-                            price: `UGX ${Number(p.unitPrice).toLocaleString()}`,
-                            image: getImageForFlavor(p.name, p.imageUrl),
-                            unitPrice: p.unitPrice
-                        }))
-                    );
-                } else {
-                    setProducts([]);
+                    apiProducts = data.map((p: { id: string; name: string; unitPrice: number; imageUrl?: string | null }) => ({
+                        id: p.id,
+                        name: p.name,
+                        description: "1 Litre",
+                        price: `UGX ${Number(p.unitPrice).toLocaleString()}`,
+                        image: getImageForFlavor(p.name, p.imageUrl),
+                        unitPrice: p.unitPrice
+                    }));
                 }
+                
+                // 4. Merge featured products with API products
+                // Featured products should always appear in the menu
+                const featuredProductsFormatted: Product[] = FEATURED_PRODUCTS.map(fp => ({
+                    id: fp.id,
+                    name: fp.name,
+                    description: fp.description,
+                    price: `UGX ${fp.price.toLocaleString()}`,
+                    image: fp.image,
+                    unitPrice: fp.price
+                }));
+                
+                // Combine featured products with API products, avoiding duplicates by name
+                const apiProductNames = new Set(apiProducts.map(p => p.name.toLowerCase()));
+                const uniqueFeaturedProducts = featuredProductsFormatted.filter(
+                    fp => !apiProductNames.has(fp.name.toLowerCase())
+                );
+                
+                setProducts([...uniqueFeaturedProducts, ...apiProducts]);
             } catch (err) {
                 console.error("Failed to load menu", err);
                 setProducts([]);
