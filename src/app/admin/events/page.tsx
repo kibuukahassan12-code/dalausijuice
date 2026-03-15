@@ -421,3 +421,5 @@ export default function EventsPage() {
     </div>
   );
 }
+export const dynamic = "force-dynamic";
+

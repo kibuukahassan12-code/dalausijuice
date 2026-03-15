@@ -359,3 +359,6 @@ export default function CheckoutPage() {
         </div>
     );
 }
+
+export const dynamic = "force-dynamic";
+
