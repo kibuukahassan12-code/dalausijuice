@@ -3,14 +3,14 @@
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./events.module.css";
 import DocumentTemplate, { DocType } from "@/components/Admin/DocumentTemplate";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-export default function EventsPage() {
+function EventsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -422,5 +422,13 @@ export default function EventsPage() {
       {/* Your original Events + Form + Edit Modal UI */}
       {/* ... */}
     </div>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
+      <EventsPageContent />
+    </Suspense>
   );
 }
