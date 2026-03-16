@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -421,6 +424,3 @@ export default function EventsPage() {
     </div>
   );
 }
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-
