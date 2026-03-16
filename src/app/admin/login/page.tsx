@@ -42,7 +42,7 @@ export default function LoginPage() {
         <div className={styles.container}>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.logoContainer}>
-                    <Image src="/images/dalausi-logo2.png" alt="Dalausi Juice" width={200} height={66} style={{ objectFit: 'contain' }} />
+                    <Image src="/images/dalausi-logo.jpg" alt="Dalausi Juice" width={200} height={66} style={{ objectFit: 'contain' }} />
                 </div>
                 <h1>Admin Portal</h1>
                 <p>Login to manage revenue and events</p>

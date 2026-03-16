@@ -55,7 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <aside className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>
                     <Link href="/">
-                        <Image src="/images/dalausi-admin-logo.png" alt="Dalausi Juice" width={120} height={120} style={{ objectFit: 'contain' }} />
+                        <Image src="/images/dalausi-logo.jpg" alt="Dalausi Juice" width={120} height={120} style={{ objectFit: 'contain' }} />
                     </Link>
                     <h2>Admin</h2>
                 </div>
