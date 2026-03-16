@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
-import { CartProvider } from "@/context/CartContext";
+import { CartProvider } from "@/contexts/CartContext";
 import "./globals.css";
 
 const outfit = Outfit({
