@@ -319,3 +319,107 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .kpiGrid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+    
+    .kpiCard {
+        padding: 1rem;
+    }
+    
+    .kpiIcon {
+        font-size: 1.5rem;
+    }
+    
+    .kpiValue {
+        font-size: 1.25rem;
+    }
+    
+    .inputGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .itemRow {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: #f8fafc;
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .tableWrapper {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+    
+    .actionCell {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    
+    .approveBtn,
+    .cancelBtn {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        gap: 1.5rem;
+    }
+    
+    .header h1 {
+        font-size: 1.25rem;
+    }
+    
+    .kpiSection {
+        padding: 1.25rem;
+    }
+    
+    .kpiGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .formSection,
+    .fullWidthSection {
+        padding: 1.25rem;
+    }
+    
+    .listHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .filterTabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .filterTabs button {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8125rem;
+    }
+    
+    .status {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+    }
+}

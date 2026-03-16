@@ -9,6 +9,7 @@ import Image from "next/image";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     if (pathname === "/admin/login") {
         return <>{children}</>;
@@ -38,7 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     useEffect(() => {
         if (pathname !== "/admin/login") {
             fetchNotifications();
-            const interval = setInterval(fetchNotifications, 60000); // Poll every minute
+            const interval = setInterval(fetchNotifications, 60000);
             return () => clearInterval(interval);
         }
     }, [pathname]);
@@ -58,18 +59,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Image src="/images/dalausi-logo.jpg" alt="Dalausi Juice" width={120} height={120} style={{ objectFit: 'contain' }} />
                     </Link>
                     <h2>Admin</h2>
+                    <button 
+                        className={styles.mobileMenuBtn} 
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Toggle menu"
+                    >
+                        {mobileMenuOpen ? '✕' : '☰'}
+                    </button>
                 </div>
 
-                <nav className={styles.nav}>
+                <nav className={`${styles.nav} ${mobileMenuOpen ? styles.open : ''}`}>
                     {menuItems.map((item) => (
                         <Link
                             key={item.path}
                             href={item.path}
                             className={`${styles.navLink} ${pathname === item.path ? styles.active : ""}`}
+                            onClick={() => setMobileMenuOpen(false)}
                         >
-                            <span className={item.icon}>{item.icon}</span> {item.name}
+                            <span className={styles.icon}>{item.icon}</span>
+                            <span className={styles.label}>{item.name}</span>
                         </Link>
                     ))}
+                    <button onClick={handleLogout} className={`${styles.navLink} ${styles.mobileLogout}`}>
+                        <span className={styles.icon}>🚪</span>
+                        <span className={styles.label}>Logout</span>
+                    </button>
                 </nav>
 
                 <div className={styles.sidebarFooter}>

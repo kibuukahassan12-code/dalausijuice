@@ -126,18 +126,135 @@
     flex: 1;
 }
 
+.mobileMenuBtn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.mobileLogout {
+    display: none;
+}
+
+.icon {
+    font-size: 1.2rem;
+}
+
+.label {
+    display: inline;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 70px;
     }
 
     .sidebarHeader h2,
-    .navLink span:not(.icon) {
+    .navLink .label {
         display: none;
+    }
+    
+    .navLink .icon {
+        font-size: 1.5rem;
     }
 
     .mainContent {
         margin-left: 70px;
+    }
+}
+
+/* Mobile hamburger menu for smaller screens */
+@media (max-width: 480px) {
+    .adminContainer {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem;
+    }
+    
+    .sidebarHeader {
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-direction: row;
+        border-bottom: none;
+    }
+    
+    .sidebarHeader h2 {
+        display: block;
+        font-size: 1rem;
+        margin-top: 0;
+    }
+    
+    .mobileMenuBtn {
+        display: block;
+    }
+    
+    .nav {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--color-plum);
+        z-index: 100;
+        padding: 1rem;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+    
+    .nav.open {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .navLink {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .navLink .label {
+        display: inline;
+    }
+    
+    .mobileLogout {
+        display: flex;
+    }
+    
+    .sidebarFooter {
+        display: none;
+    }
+    
+    .mainContent {
+        margin-left: 0;
+    }
+    
+    .topHeader {
+        padding: 0 1rem;
+        height: 60px;
+    }
+    
+    .pageContent {
+        padding: 1rem;
+    }
+    
+    .notificationDropdown {
+        width: calc(100vw - 2rem);
+        max-width: 320px;
+        right: -0.5rem;
     }
 }
 

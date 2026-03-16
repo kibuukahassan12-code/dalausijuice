@@ -419,8 +419,204 @@ function EventsPageContent() {
 
   return (
     <div className={styles.eventsPage}>
-      {/* Your original Events + Form + Edit Modal UI */}
-      {/* ... */}
+      <div className={styles.header}>
+        <h1>Event Management</h1>
+        <button onClick={handleReset} className={styles.newBtn}>+ New Event</button>
+      </div>
+
+      {/* Events List */}
+      <div className={styles.section}>
+        <h2>Events</h2>
+        {events.length === 0 ? (
+          <p>No events found. Create your first event below.</p>
+        ) : (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Event Name</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map((ev: any) => (
+                <tr key={ev.id}>
+                  <td>{ev.eventName}</td>
+                  <td>{ev.customer?.name}</td>
+                  <td>{new Date(ev.eventDate).toLocaleDateString()}</td>
+                  <td>{ev.location}</td>
+                  <td>UGX {Number(ev.totalAmount).toLocaleString()}</td>
+                  <td>{ev.status}</td>
+                  <td className={styles.actions}>
+                    <button onClick={() => handleViewEvent(ev)}>View</button>
+                    <button onClick={() => handleEditEvent(ev)}>Edit</button>
+                    <button onClick={() => handleDeleteEvent(ev)}>Delete</button>
+                    <button onClick={() => handleDownloadDocument(ev, "QUOTATION")}>Quote</button>
+                    <button onClick={() => handleDownloadDocument(ev, "RECEIPT")}>Receipt</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Create Event Form */}
+      {!editingEvent && (
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <h2>Create New Event</h2>
+          <div className={styles.formGrid}>
+            <div className={styles.field}>
+              <label>Customer Name</label>
+              <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} required />
+            </div>
+            <div className={styles.field}>
+              <label>Customer Phone</label>
+              <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} required />
+            </div>
+            <div className={styles.field}>
+              <label>Event Name</label>
+              <input type="text" value={eventName} onChange={e => setEventName(e.target.value)} required />
+            </div>
+            <div className={styles.field}>
+              <label>Event Date</label>
+              <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} required />
+            </div>
+            <div className={styles.field}>
+              <label>Location</label>
+              <input type="text" value={location} onChange={e => setLocation(e.target.value)} required />
+            </div>
+          </div>
+
+          <h3>Juice Selections</h3>
+          {selectedItems.map((item, idx) => (
+            <div key={idx} className={styles.itemRow}>
+              <select value={item.productId} onChange={e => updateItem(idx, "productId", e.target.value)}>
+                {products.map((p: any) => (
+                  <option key={p.id} value={p.id}>{p.name} (UGX {p.unitPrice})</option>
+                ))}
+              </select>
+              <input type="number" min="1" value={item.quantity} onChange={e => updateItem(idx, "quantity", e.target.value)} />
+              <span>UGX {(item.quantity * item.unitPrice).toLocaleString()}</span>
+              <button type="button" onClick={() => removeItem(idx)}>Remove</button>
+            </div>
+          ))}
+          <button type="button" onClick={addItem} className={styles.addBtn}>+ Add Juice</button>
+
+          <div className={styles.fees}>
+            <div className={styles.field}>
+              <label>Setup Fee</label>
+              <input type="number" value={setupFee} onChange={e => setSetupFee(e.target.value)} />
+            </div>
+            <div className={styles.field}>
+              <label>Service Fee</label>
+              <input type="number" value={serviceFee} onChange={e => setServiceFee(e.target.value)} />
+            </div>
+            <div className={styles.field}>
+              <label>Transport Fee</label>
+              <input type="number" value={transportFee} onChange={e => setTransportFee(e.target.value)} />
+            </div>
+          </div>
+
+          <div className={styles.summary}>
+            <p>Items Subtotal: UGX {itemsSubtotal.toLocaleString()}</p>
+            <p>Setup Fee: UGX {setupNum.toLocaleString()}</p>
+            <p>Service Fee: UGX {serviceNum.toLocaleString()}</p>
+            <p>Transport Fee: UGX {transportNum.toLocaleString()}</p>
+            <p className={styles.total}>Total: UGX {totalAmount.toLocaleString()}</p>
+          </div>
+
+          <div className={styles.payment}>
+            <div className={styles.field}>
+              <label>Payment Method</label>
+              <select value={paymentMethodId} onChange={e => setPaymentMethodId(e.target.value)}>
+                {paymentMethods.map((pm: any) => (
+                  <option key={pm.id} value={pm.id}>{pm.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.field}>
+              <label>Amount Paid</label>
+              <input type="number" value={amountPaid} onChange={e => setAmountPaid(e.target.value)} />
+            </div>
+          </div>
+          <p>Balance Due: UGX {balanceDue.toLocaleString()}</p>
+
+          <div className={styles.buttons}>
+            <button type="submit" disabled={loading} className={styles.submitBtn}>
+              {loading ? "Creating..." : "Create Event"}
+            </button>
+            <button type="button" onClick={handleReset} className={styles.resetBtn}>Reset</button>
+          </div>
+        </form>
+      )}
+
+      {/* Edit Event Modal */}
+      {editingEvent && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2>Edit Event</h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className={styles.field}>
+                <label>Event Name</label>
+                <input type="text" value={editingEvent.eventName} onChange={e => updateEditingField("eventName", e.target.value)} required />
+              </div>
+              <div className={styles.field}>
+                <label>Event Date</label>
+                <input type="date" value={editingEvent.eventDate?.split("T")[0]} onChange={e => updateEditingField("eventDate", e.target.value)} required />
+              </div>
+              <div className={styles.field}>
+                <label>Location</label>
+                <input type="text" value={editingEvent.location} onChange={e => updateEditingField("location", e.target.value)} />
+              </div>
+              <div className={styles.field}>
+                <label>Status</label>
+                <select value={editingEvent.status} onChange={e => updateEditingField("status", e.target.value)}>
+                  <option value="Upcoming">Upcoming</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label>Setup Fee</label>
+                <input type="number" value={editingEvent.setupFee} onChange={e => updateEditingField("setupFee", Number(e.target.value))} />
+              </div>
+              <div className={styles.field}>
+                <label>Service Fee</label>
+                <input type="number" value={editingEvent.serviceFee} onChange={e => updateEditingField("serviceFee", Number(e.target.value))} />
+              </div>
+              <div className={styles.field}>
+                <label>Transport Fee</label>
+                <input type="number" value={editingEvent.transportFee} onChange={e => updateEditingField("transportFee", Number(e.target.value))} />
+              </div>
+
+              <h4>Items</h4>
+              {(editingEvent.items || []).map((item: any, idx: number) => (
+                <div key={idx} className={styles.itemRow}>
+                  <select value={item.productId || item.product?.id} onChange={e => updateEditingItem(idx, "productId", e.target.value)}>
+                    {products.map((p: any) => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                  <input type="number" min="1" value={item.quantity} onChange={e => updateEditingItem(idx, "quantity", e.target.value)} />
+                </div>
+              ))}
+
+              <div className={styles.buttons}>
+                <button type="submit" disabled={editLoading} className={styles.submitBtn}>
+                  {editLoading ? "Saving..." : "Save Changes"}
+                </button>
+                <button type="button" onClick={() => setEditingEvent(null)} className={styles.resetBtn}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
