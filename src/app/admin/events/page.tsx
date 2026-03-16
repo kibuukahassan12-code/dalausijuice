@@ -422,4 +422,5 @@ export default function EventsPage() {
   );
 }
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
