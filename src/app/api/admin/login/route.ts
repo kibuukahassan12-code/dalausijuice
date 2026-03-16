@@ -1,10 +1,10 @@
-export const dynamic = "force-dynamic"
 import { prisma } from "@/lib/prisma";
 import { PrismaClient } from "@prisma/client";
 import { verifyPassword, encrypt } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
     try {
