@@ -258,15 +258,14 @@ export default function ProductsPage() {
                         Status: <strong>{menuStatus === "OPEN" ? "Order Taking OPEN" : "Orders CLOSED"}</strong>
                     </div>
 
-                    <label className={styles.toggleSwitch}>
-                        <input
-                            type="checkbox"
-                            checked={menuStatus === "OPEN"}
-                            onChange={() => updateMenuStatus(menuStatus === "OPEN" ? "CLOSED" : "OPEN")}
-                            disabled={updatingStatus}
-                        />
-                        <span className={styles.toggleSlider}></span>
-                    </label>
+                    <button
+                        type="button"
+                        className={`${styles.toggleBtn} ${menuStatus === "OPEN" ? styles.toggleBtnOpen : styles.toggleBtnClosed}`}
+                        onClick={() => updateMenuStatus(menuStatus === "OPEN" ? "CLOSED" : "OPEN")}
+                        disabled={updatingStatus}
+                    >
+                        {updatingStatus ? "..." : menuStatus === "OPEN" ? "CLOSE" : "OPEN"}
+                    </button>
 
                     <div className={styles.toggleText}>
                         {menuStatus === "OPEN" ? "Click to Close Orders" : "Click to Open Orders"}

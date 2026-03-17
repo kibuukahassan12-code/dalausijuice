@@ -198,61 +198,36 @@
     margin-bottom: 0.5rem;
 }
 
-/* Toggle Switch */
-.toggleSwitch {
-    position: relative;
-    display: inline-block;
+.toggleBtn {
     width: 100px;
     height: 50px;
-}
-
-.toggleSwitch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.toggleSlider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #dc3545;
-    /* Red (Closed) */
-    transition: .4s;
     border-radius: 50px;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.toggleSlider:before {
-    position: absolute;
-    content: "";
-    height: 42px;
-    width: 42px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Checked State (Open/Green) */
-.toggleSwitch input:checked+.toggleSlider {
+.toggleBtnOpen {
     background-color: #22c55e;
-    /* Green (Open) */
+    color: white;
 }
 
-.toggleSwitch input:checked+.toggleSlider:before {
-    transform: translateX(50px);
+.toggleBtnClosed {
+    background-color: #dc3545;
+    color: white;
 }
 
-/* Disabled State */
-.toggleSwitch input:disabled+.toggleSlider {
+.toggleBtn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.toggleBtn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .toggleText {
