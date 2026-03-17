@@ -57,19 +57,29 @@ export default function ProductsPage() {
         }
     };
 
-    const updateMenuStatus = async (status: string) => {
+    const updateMenuStatus = async (newStatus: string) => {
+        console.log("[Toggle] Clicked. Current status:", menuStatus, "→ New status:", newStatus);
         setUpdatingStatus(true);
         try {
             const res = await fetch("/api/admin/settings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ key: "daily_menu_status", value: status }),
+                body: JSON.stringify({ key: "daily_menu_status", value: newStatus }),
             });
+            console.log("[Toggle] API response status:", res.status);
             if (res.ok) {
-                setMenuStatus(status);
+                const data = await res.json();
+                console.log("[Toggle] API response data:", data);
+                setMenuStatus(newStatus);
+                alert(`Menu is now ${newStatus === "OPEN" ? "OPEN" : "CLOSED"} for orders`);
+            } else {
+                const error = await res.text();
+                console.error("[Toggle] API error:", error);
+                alert("Failed to update menu status. Please try again.");
             }
         } catch (error) {
-            console.error("Error updating menu status:", error);
+            console.error("[Toggle] Network error:", error);
+            alert("Network error. Please check your connection.");
         } finally {
             setUpdatingStatus(false);
         }
@@ -261,10 +271,14 @@ export default function ProductsPage() {
                     <button
                         type="button"
                         className={`${styles.toggleBtn} ${menuStatus === "OPEN" ? styles.toggleBtnOpen : styles.toggleBtnClosed}`}
-                        onClick={() => updateMenuStatus(menuStatus === "OPEN" ? "CLOSED" : "OPEN")}
+                        onClick={() => {
+                            console.log("[Button] onClick triggered");
+                            const newStatus = menuStatus === "OPEN" ? "CLOSED" : "OPEN";
+                            updateMenuStatus(newStatus);
+                        }}
                         disabled={updatingStatus}
                     >
-                        {updatingStatus ? "..." : menuStatus === "OPEN" ? "CLOSE" : "OPEN"}
+                        {updatingStatus ? "..." : menuStatus === "OPEN" ? "CLOSE ORDERS" : "OPEN ORDERS"}
                     </button>
 
                     <div className={styles.toggleText}>
