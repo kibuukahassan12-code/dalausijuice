@@ -10,6 +10,118 @@ import DocumentTemplate, { DocType } from "@/components/Admin/DocumentTemplate";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+interface EventItem {
+  id: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  name?: string;
+}
+
+interface Event {
+  id: string;
+  eventName: string;
+  eventDate: string;
+  location: string;
+  status: "Upcoming" | "In Progress" | "Completed" | "Cancelled";
+  totalAmount: number;
+  customer?: {
+    name: string;
+    phone?: string;
+  };
+  items?: any[];
+  paymentLinks?: any[];
+}
+
+// Status Badge Component
+function StatusBadge({ status }: { status: string }) {
+  const getStatusClass = () => {
+    switch (status?.toLowerCase()) {
+      case "upcoming": return styles.statusUpcoming;
+      case "in progress": return styles.statusInProgress;
+      case "completed": return styles.statusCompleted;
+      case "cancelled": return styles.statusCancelled;
+      default: return styles.statusUpcoming;
+    }
+  };
+
+  return (
+    <span className={`${styles.statusBadge} ${getStatusClass()}`}>
+      {status || "Upcoming"}
+    </span>
+  );
+}
+
+// Button Components
+function Button({ 
+  children, 
+  variant = "primary", 
+  size = "md", 
+  onClick, 
+  disabled = false,
+  type = "button",
+  className = ""
+}: { 
+  children: React.ReactNode;
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "outline";
+  size?: "sm" | "md" | "lg";
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  className?: string;
+}) {
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${styles.btn} ${styles[`btn${variant.charAt(0).toUpperCase() + variant.slice(1)}`]} ${styles[`btn${size.charAt(0).toUpperCase() + size.slice(1)}`]} ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Loading Spinner
+function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  return <span className={`${styles.spinner} ${styles[`spinner${size.charAt(0).toUpperCase() + size.slice(1)}`]}`} />;
+}
+
+// Modal Component
+function Modal({ 
+  isOpen, 
+  onClose, 
+  title, 
+  children,
+  footer
+}: { 
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}) {
+  if (!isOpen) return null;
+  
+  return (
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <div className={styles.modalHeader}>
+          <h2>{title}</h2>
+          <button className={styles.closeBtn} onClick={onClose}>×</button>
+        </div>
+        <div className={styles.modalBody}>{children}</div>
+        {footer && <div className={styles.modalFooter}>{footer}</div>}
+      </div>
+    </div>
+  );
+}
+
+// Card Component
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`${styles.card} ${className}`}>{children}</div>;
+}
+
 function EventsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,6 +151,8 @@ function EventsPageContent() {
   const [currentEvent, setCurrentEvent] = useState<any>(null);
   const [editingEvent, setEditingEvent] = useState<any>(null);
   const [editLoading, setEditLoading] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<any>(null);
   const docRef = useRef<HTMLDivElement>(null);
 
   // Fetch initial data
@@ -185,15 +299,21 @@ function EventsPageContent() {
   // Editing
   const handleEditEvent = (event: any) => setEditingEvent(event);
 
-  const handleDeleteEvent = async (event: any) => {
-    const id = event?.id;
-    if (!id) return;
-    if (!confirm(`Delete event "${event?.eventName ?? "Event"}"?`)) return;
+  const handleDeleteClick = (event: any) => {
+    setEventToDelete(event);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!eventToDelete?.id) return;
+    
     try {
-      const res = await fetch(`/api/admin/events/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/events/${eventToDelete.id}`, { method: "DELETE" });
       if (res.ok) {
         fetchEvents();
         setEditingEvent(null);
+        setIsDeleteModalOpen(false);
+        setEventToDelete(null);
       } else {
         const err = await res.json();
         alert(err.error ?? "Failed to delete event");
@@ -408,8 +528,41 @@ function EventsPageContent() {
     const hasPayments = currentDocData.payments && currentDocData.payments.length > 0;
     return (
       <div className={styles.docsContainer}>
-        {/* DOC Header & Tabs */}
-        {/* ...Your existing doc tabs UI... */}
+        <div className={styles.docsHeader}>
+          <div className={styles.docTabs}>
+            <button 
+              onClick={() => setActiveDoc("QUOTATION")} 
+              className={`${styles.tabBtn} ${activeDoc === "QUOTATION" ? styles.activeTab : ""}`}
+            >
+              Quotation
+            </button>
+            <button 
+              onClick={() => setActiveDoc("INVOICE")} 
+              className={`${styles.tabBtn} ${activeDoc === "INVOICE" ? styles.activeTab : ""}`}
+            >
+              Invoice
+            </button>
+            {hasPayments && (
+              <button 
+                onClick={() => setActiveDoc("RECEIPT")} 
+                className={`${styles.tabBtn} ${activeDoc === "RECEIPT" ? styles.activeTab : ""}`}
+              >
+                Receipt
+              </button>
+            )}
+          </div>
+          <div className={styles.headerActions}>
+            <button onClick={handlePrint} className={styles.printBtn}>
+              Print
+            </button>
+            <button onClick={handleDownloadPDF} className={styles.downloadBtn}>
+              Download PDF
+            </button>
+            <button onClick={() => setShowDocs(false)} className={styles.backBtn}>
+              Back to Events
+            </button>
+          </div>
+        </div>
         <div className={styles.docPreview} ref={docRef}>
           <DocumentTemplate type={activeDoc} {...currentDocData} />
         </div>
@@ -419,161 +572,222 @@ function EventsPageContent() {
 
   return (
     <div className={styles.eventsPage}>
-      <div className={styles.header}>
-        <h1>Event Management</h1>
-        <button onClick={handleReset} className={styles.newBtn}>+ New Event</button>
+      {/* Page Header */}
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>Event Management</h1>
+        <p className={styles.pageSubtitle}>Manage event bookings, quotations, and invoices</p>
       </div>
 
       {/* Events List */}
-      <div className={styles.section}>
-        <h2>Events</h2>
-        {events.length === 0 ? (
-          <p>No events found. Create your first event below.</p>
-        ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Event Name</th>
-                <th>Client</th>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((ev: any) => (
-                <tr key={ev.id}>
-                  <td>{ev.eventName}</td>
-                  <td>{ev.customer?.name}</td>
-                  <td>{new Date(ev.eventDate).toLocaleDateString()}</td>
-                  <td>{ev.location}</td>
-                  <td>UGX {Number(ev.totalAmount).toLocaleString()}</td>
-                  <td>{ev.status}</td>
-                  <td className={styles.actions}>
-                    <button onClick={() => handleViewEvent(ev)}>View</button>
-                    <button onClick={() => handleEditEvent(ev)}>Edit</button>
-                    <button onClick={() => handleDeleteEvent(ev)}>Delete</button>
-                    <button onClick={() => handleDownloadDocument(ev, "QUOTATION")}>Quote</button>
-                    <button onClick={() => handleDownloadDocument(ev, "RECEIPT")}>Receipt</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      <Card className={styles.listSection}>
+        <div className={styles.sectionTitleBar}>
+          <h2 className={styles.sectionTitle}>All Events</h2>
+          <p className={styles.listSectionDesc}>View and manage all your event bookings</p>
+        </div>
+        <div className={styles.tableCard}>
+          {events.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyStateText}>No events found</p>
+              <p className={styles.emptyStateHint}>Create your first event using the form below</p>
+            </div>
+          ) : (
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Event Name</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th className={styles.numCol}>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {events.map((ev: any) => (
+                    <tr key={ev.id}>
+                      <td className={styles.eventName}>{ev.eventName}</td>
+                      <td>{ev.customer?.name}</td>
+                      <td>{new Date(ev.eventDate).toLocaleDateString()}</td>
+                      <td className={styles.eventLoc}>{ev.location}</td>
+                      <td className={styles.numCol}>UGX {Number(ev.totalAmount).toLocaleString()}</td>
+                      <td><StatusBadge status={ev.status} /></td>
+                      <td>
+                        <div className={styles.rowActions}>
+                          <Button variant="primary" size="sm" onClick={() => handleViewEvent(ev)}>View</Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleEditEvent(ev)}>Edit</Button>
+                          <Button variant="danger" size="sm" onClick={() => handleDeleteClick(ev)}>Delete</Button>
+                          <Button variant="secondary" size="sm" onClick={() => handleDownloadDocument(ev, "QUOTATION")}>Quote</Button>
+                          <Button variant="secondary" size="sm" onClick={() => handleDownloadDocument(ev, "RECEIPT")}>Receipt</Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* Create Event Form */}
       {!editingEvent && (
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <h2>Create New Event</h2>
-          <div className={styles.formGrid}>
-            <div className={styles.field}>
-              <label>Customer Name</label>
-              <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} required />
+        <Card className={styles.formSection}>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <h2 className={styles.sectionTitle}>Create New Event</h2>
+            <div className={styles.formBlock}>
+              <h3 className={styles.formBlockTitle}>Customer Information</h3>
+              <div className={styles.inputGrid}>
+                <div className={styles.inputGroup}>
+                  <label>Customer Name</label>
+                  <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} required placeholder="Enter customer name" />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Customer Phone</label>
+                  <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} required placeholder="Enter phone number" />
+                </div>
+              </div>
             </div>
-            <div className={styles.field}>
-              <label>Customer Phone</label>
-              <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} required />
-            </div>
-            <div className={styles.field}>
-              <label>Event Name</label>
-              <input type="text" value={eventName} onChange={e => setEventName(e.target.value)} required />
-            </div>
-            <div className={styles.field}>
-              <label>Event Date</label>
-              <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} required />
-            </div>
-            <div className={styles.field}>
-              <label>Location</label>
-              <input type="text" value={location} onChange={e => setLocation(e.target.value)} required />
-            </div>
-          </div>
 
-          <h3>Juice Selections</h3>
-          {selectedItems.map((item, idx) => (
-            <div key={idx} className={styles.itemRow}>
-              <select value={item.productId} onChange={e => updateItem(idx, "productId", e.target.value)}>
-                {products.map((p: any) => (
-                  <option key={p.id} value={p.id}>{p.name} (UGX {p.unitPrice})</option>
-                ))}
-              </select>
-              <input type="number" min="1" value={item.quantity} onChange={e => updateItem(idx, "quantity", e.target.value)} />
-              <span>UGX {(item.quantity * item.unitPrice).toLocaleString()}</span>
-              <button type="button" onClick={() => removeItem(idx)}>Remove</button>
+            <div className={styles.formBlock}>
+              <h3 className={styles.formBlockTitle}>Event Details</h3>
+              <div className={styles.inputGrid}>
+                <div className={styles.inputGroup}>
+                  <label>Event Name</label>
+                  <input type="text" value={eventName} onChange={e => setEventName(e.target.value)} required placeholder="Enter event name" />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Event Date</label>
+                  <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} required />
+                </div>
+                <div className={styles.inputGroupFull}>
+                  <label>Location</label>
+                  <input type="text" value={location} onChange={e => setLocation(e.target.value)} required placeholder="Enter event location" />
+                </div>
+              </div>
             </div>
-          ))}
-          <button type="button" onClick={addItem} className={styles.addBtn}>+ Add Juice</button>
 
-          <div className={styles.fees}>
-            <div className={styles.field}>
-              <label>Setup Fee</label>
-              <input type="number" value={setupFee} onChange={e => setSetupFee(e.target.value)} />
+            <div className={styles.itemsSection}>
+              <div className={styles.sectionHeader}>
+                <h3 className={styles.formBlockTitle}>Juice Selections</h3>
+                <Button variant="secondary" size="sm" onClick={addItem}>+ Add Juice</Button>
+              </div>
+              {selectedItems.map((item, idx) => (
+                <div key={idx} className={styles.itemRow}>
+                  <select value={item.productId} onChange={e => updateItem(idx, "productId", e.target.value)}>
+                    {products.map((p: any) => (
+                      <option key={p.id} value={p.id}>{p.name} (UGX {p.unitPrice})</option>
+                    ))}
+                  </select>
+                  <input type="number" min="1" value={item.quantity} onChange={e => updateItem(idx, "quantity", e.target.value)} />
+                  <span className={styles.itemPrice}>UGX {(item.quantity * item.unitPrice).toLocaleString()}</span>
+                  <button type="button" onClick={() => removeItem(idx)} className={styles.removeBtn}>×</button>
+                </div>
+              ))}
             </div>
-            <div className={styles.field}>
-              <label>Service Fee</label>
-              <input type="number" value={serviceFee} onChange={e => setServiceFee(e.target.value)} />
-            </div>
-            <div className={styles.field}>
-              <label>Transport Fee</label>
-              <input type="number" value={transportFee} onChange={e => setTransportFee(e.target.value)} />
-            </div>
-          </div>
 
-          <div className={styles.summary}>
-            <p>Items Subtotal: UGX {itemsSubtotal.toLocaleString()}</p>
-            <p>Setup Fee: UGX {setupNum.toLocaleString()}</p>
-            <p>Service Fee: UGX {serviceNum.toLocaleString()}</p>
-            <p>Transport Fee: UGX {transportNum.toLocaleString()}</p>
-            <p className={styles.total}>Total: UGX {totalAmount.toLocaleString()}</p>
-          </div>
-
-          <div className={styles.payment}>
-            <div className={styles.field}>
-              <label>Payment Method</label>
-              <select value={paymentMethodId} onChange={e => setPaymentMethodId(e.target.value)}>
-                {paymentMethods.map((pm: any) => (
-                  <option key={pm.id} value={pm.id}>{pm.name}</option>
-                ))}
-              </select>
+            <div className={styles.feeSection}>
+              <h3 className={styles.formBlockTitle}>Additional Fees</h3>
+              <div className={styles.inputGrid}>
+                <div className={styles.inputGroup}>
+                  <label>Setup Fee (UGX)</label>
+                  <input type="number" value={setupFee} onChange={e => setSetupFee(e.target.value)} placeholder="0" />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Service Fee (UGX)</label>
+                  <input type="number" value={serviceFee} onChange={e => setServiceFee(e.target.value)} placeholder="0" />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Transport Fee (UGX)</label>
+                  <input type="number" value={transportFee} onChange={e => setTransportFee(e.target.value)} placeholder="0" />
+                </div>
+              </div>
             </div>
-            <div className={styles.field}>
-              <label>Amount Paid</label>
-              <input type="number" value={amountPaid} onChange={e => setAmountPaid(e.target.value)} />
-            </div>
-          </div>
-          <p>Balance Due: UGX {balanceDue.toLocaleString()}</p>
 
-          <div className={styles.buttons}>
-            <button type="submit" disabled={loading} className={styles.submitBtn}>
-              {loading ? "Creating..." : "Create Event"}
-            </button>
-            <button type="button" onClick={handleReset} className={styles.resetBtn}>Reset</button>
-          </div>
-        </form>
+            <div className={styles.summaryBox}>
+              <h3 className={styles.summaryTitle}>Order Summary</h3>
+              <div className={styles.summaryRow}>
+                <span>Items Subtotal</span>
+                <span>UGX {itemsSubtotal.toLocaleString()}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Setup Fee</span>
+                <span>UGX {setupNum.toLocaleString()}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Service Fee</span>
+                <span>UGX {serviceNum.toLocaleString()}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Transport Fee</span>
+                <span>UGX {transportNum.toLocaleString()}</span>
+              </div>
+              <div className={styles.total}>
+                <span>Total Amount</span>
+                <span>UGX {totalAmount.toLocaleString()}</span>
+              </div>
+            </div>
+
+            <div className={styles.paymentSection}>
+              <h3 className={styles.formBlockTitle}>Payment Information</h3>
+              <div className={styles.inputGrid}>
+                <div className={styles.inputGroup}>
+                  <label>Payment Method</label>
+                  <select value={paymentMethodId} onChange={e => setPaymentMethodId(e.target.value)}>
+                    {paymentMethods.map((pm: any) => (
+                      <option key={pm.id} value={pm.id}>{pm.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.inputGroup}>
+                  <label>Amount Paid (UGX)</label>
+                  <input type="number" value={amountPaid} onChange={e => setAmountPaid(e.target.value)} placeholder="0" />
+                </div>
+              </div>
+              <p className={styles.balanceDue}>Balance Due: UGX {balanceDue.toLocaleString()}</p>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <Button variant="outline" onClick={handleReset}>Reset</Button>
+              <Button variant="primary" type="submit" disabled={loading}>
+                {loading ? <><LoadingSpinner size="sm" /> Creating...</> : "Create Event"}
+              </Button>
+            </div>
+          </form>
+        </Card>
       )}
 
       {/* Edit Event Modal */}
-      {editingEvent && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h2>Edit Event</h2>
-            <form onSubmit={handleEditSubmit}>
-              <div className={styles.field}>
+      <Modal 
+        isOpen={!!editingEvent} 
+        onClose={() => setEditingEvent(null)}
+        title="Edit Event"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setEditingEvent(null)}>Cancel</Button>
+            <Button variant="primary" onClick={handleEditSubmit} disabled={editLoading}>
+              {editLoading ? <><LoadingSpinner size="sm" /> Saving...</> : "Save Changes"}
+            </Button>
+          </>
+        }
+      >
+        {editingEvent && (
+          <form onSubmit={handleEditSubmit} className={styles.form}>
+            <div className={styles.inputGrid}>
+              <div className={styles.inputGroup}>
                 <label>Event Name</label>
                 <input type="text" value={editingEvent.eventName} onChange={e => updateEditingField("eventName", e.target.value)} required />
               </div>
-              <div className={styles.field}>
+              <div className={styles.inputGroup}>
                 <label>Event Date</label>
                 <input type="date" value={editingEvent.eventDate?.split("T")[0]} onChange={e => updateEditingField("eventDate", e.target.value)} required />
               </div>
-              <div className={styles.field}>
+              <div className={styles.inputGroup}>
                 <label>Location</label>
                 <input type="text" value={editingEvent.location} onChange={e => updateEditingField("location", e.target.value)} />
               </div>
-              <div className={styles.field}>
+              <div className={styles.inputGroup}>
                 <label>Status</label>
                 <select value={editingEvent.status} onChange={e => updateEditingField("status", e.target.value)}>
                   <option value="Upcoming">Upcoming</option>
@@ -582,20 +796,22 @@ function EventsPageContent() {
                   <option value="Cancelled">Cancelled</option>
                 </select>
               </div>
-              <div className={styles.field}>
+              <div className={styles.inputGroup}>
                 <label>Setup Fee</label>
                 <input type="number" value={editingEvent.setupFee} onChange={e => updateEditingField("setupFee", Number(e.target.value))} />
               </div>
-              <div className={styles.field}>
+              <div className={styles.inputGroup}>
                 <label>Service Fee</label>
                 <input type="number" value={editingEvent.serviceFee} onChange={e => updateEditingField("serviceFee", Number(e.target.value))} />
               </div>
-              <div className={styles.field}>
+              <div className={styles.inputGroup}>
                 <label>Transport Fee</label>
                 <input type="number" value={editingEvent.transportFee} onChange={e => updateEditingField("transportFee", Number(e.target.value))} />
               </div>
+            </div>
 
-              <h4>Items</h4>
+            <div className={styles.itemsSection} style={{ marginTop: "1.5rem" }}>
+              <h4 className={styles.formBlockTitle}>Items</h4>
               {(editingEvent.items || []).map((item: any, idx: number) => (
                 <div key={idx} className={styles.itemRow}>
                   <select value={item.productId || item.product?.id} onChange={e => updateEditingItem(idx, "productId", e.target.value)}>
@@ -606,17 +822,30 @@ function EventsPageContent() {
                   <input type="number" min="1" value={item.quantity} onChange={e => updateEditingItem(idx, "quantity", e.target.value)} />
                 </div>
               ))}
+            </div>
+          </form>
+        )}
+      </Modal>
 
-              <div className={styles.buttons}>
-                <button type="submit" disabled={editLoading} className={styles.submitBtn}>
-                  {editLoading ? "Saving..." : "Save Changes"}
-                </button>
-                <button type="button" onClick={() => setEditingEvent(null)} className={styles.resetBtn}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Confirm Delete"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+            <Button variant="danger" onClick={handleConfirmDelete}>
+              Delete Event
+            </Button>
+          </>
+        }
+      >
+        <p>Are you sure you want to delete <strong>{eventToDelete?.eventName}</strong>?</p>
+        <p style={{ color: '#64748b', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+          This action cannot be undone. All associated data will be permanently removed.
+        </p>
+      </Modal>
     </div>
   );
 }

@@ -96,12 +96,12 @@ export default function Home() {
               </p>
               
               <div className={styles.heroCTAGroup}>
-                <Link href="/daily-menu" className={styles.btnPrimary}>
+                <a href="https://wa.me/256702071497" target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
                   <span>Order Now</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </Link>
+                </a>
                 <Link href="/events-packages" className={styles.btnSecondary}>
                   Event Packages
                 </Link>
@@ -117,7 +117,7 @@ export default function Home() {
                   <div className={styles.heroStatLabel}>Juice Varieties</div>
                 </div>
                 <div className={styles.heroStat}>
-                  <div className={styles.heroStatNumber}>24hr</div>
+                  <div className={styles.heroStatNumber}>12hr</div>
                   <div className={styles.heroStatLabel}>Fresh Delivery</div>
                 </div>
               </div>
