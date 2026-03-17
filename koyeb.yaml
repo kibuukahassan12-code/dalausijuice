@@ -14,12 +14,14 @@ healthcheck:
   path: /
   port: 3000
 
-volumes:
-  - path: /app/data
-    size: 1Gi
-
 env:
   - name: NODE_ENV
     value: production
   - name: DATABASE_URL
-    value: file:./data/dev.db
+    value: ${KOYEB_DATABASE_URL}
+
+databases:
+  - name: dalausi-db
+    engine: postgres
+    version: "15"
+    size: micro
