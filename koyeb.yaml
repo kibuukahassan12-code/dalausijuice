@@ -1,0 +1,25 @@
+app:
+  name: dalausi-juice
+  env: production
+
+build:
+  builder: dockerfile
+  dockerfile: Dockerfile
+
+ports:
+  - port: 3000
+    protocol: http
+
+healthcheck:
+  path: /
+  port: 3000
+
+volumes:
+  - path: /app/data
+    size: 1Gi
+
+env:
+  - name: NODE_ENV
+    value: production
+  - name: DATABASE_URL
+    value: file:./data/dev.db
