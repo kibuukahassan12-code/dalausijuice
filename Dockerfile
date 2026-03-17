@@ -7,6 +7,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
+# Copy prisma schema and generate client
+COPY prisma ./prisma
+RUN npx prisma generate
+
 # Copy source code
 COPY . .
 
@@ -22,11 +26,15 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --production
 
+# Copy prisma schema and generate client in production
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+RUN npx prisma generate
+
 # Copy built application
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/prisma ./prisma
 
 # Create data directory for SQLite
 RUN mkdir -p /app/data
@@ -35,4 +43,4 @@ RUN mkdir -p /app/data
 EXPOSE 3000
 
 # Start the application
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed || true && npm start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

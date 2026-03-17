@@ -103,7 +103,7 @@ const FEATURED_PRODUCTS = [
         name: "Citrus Combo",
         description: "1 Litre",
         price: 10000,
-        image: "/images/citrus_combo.png",
+        image: "/images/citrus_combo_new.png",
     },
     {
         id: "featured-sugarcane-ginger",
