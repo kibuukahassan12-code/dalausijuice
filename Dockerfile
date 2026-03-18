@@ -36,11 +36,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.mjs ./
 
-# Create data directory for SQLite
-RUN mkdir -p /app/data
-
 # Expose port
 EXPOSE 3000
 
-# Start the application
+# Start the application with migrations
 CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
