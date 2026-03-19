@@ -243,4 +243,17 @@
     font-weight: 700;
     color: #64748b;
     font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+}
+
+.statusOpen {
+    color: #16a34a;
+    background: #dcfce7;
+}
+
+.statusClosed {
+    color: #dc2626;
+    background: #fee2e2;
 }

@@ -281,8 +281,8 @@ export default function ProductsPage() {
                         {updatingStatus ? "..." : menuStatus === "OPEN" ? "CLOSE ORDERS" : "OPEN ORDERS"}
                     </button>
 
-                    <div className={styles.toggleText}>
-                        {menuStatus === "OPEN" ? "Click to Close Orders" : "Click to Open Orders"}
+                    <div className={`${styles.toggleText} ${menuStatus === "OPEN" ? styles.statusOpen : styles.statusClosed}`}>
+                        {menuStatus === "OPEN" ? "Orders are OPEN — accepting new orders" : "Orders are CLOSED — not accepting orders"}
                     </div>
                 </div>
             </section>
