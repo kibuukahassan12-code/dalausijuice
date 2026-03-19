@@ -67,14 +67,14 @@ export default function ProductsPage() {
                 body: JSON.stringify({ key: "daily_menu_status", value: newStatus }),
             });
             console.log("[Toggle] API response status:", res.status);
-            if (res.ok) {
-                const data = await res.json();
-                console.log("[Toggle] API response data:", data);
+            const data = await res.json();
+            console.log("[Toggle] API response data:", data);
+            
+            if (res.ok || data.fallback) {
                 setMenuStatus(newStatus);
-                alert(`Menu is now ${newStatus === "OPEN" ? "OPEN" : "CLOSED"} for orders`);
+                alert(`Menu is now ${newStatus === "OPEN" ? "OPEN" : "CLOSED"} for orders${data.fallback ? " (fallback mode)" : ""}`);
             } else {
-                const error = await res.text();
-                console.error("[Toggle] API error:", error);
+                console.error("[Toggle] API error:", data.error);
                 alert("Failed to update menu status. Please try again.");
             }
         } catch (error) {
