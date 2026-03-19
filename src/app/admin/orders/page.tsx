@@ -130,7 +130,17 @@ export default function OrdersPage() {
                     resetForm();
                 }
             } else if (res.ok) {
+                const createdOrder = await res.json();
                 resetForm();
+                // Show receipt for the newly created order
+                const amountPaid = createdOrder.paymentLinks?.reduce((sum: number, link: any) => sum + (link.payment?.amount || 0), 0) || parseFloat(amountPaid || "0");
+                const balanceDue = createdOrder.totalAmount - amountPaid;
+                setSelectedOrder({
+                    ...createdOrder,
+                    amountPaid,
+                    balanceDue: balanceDue > 0 ? balanceDue : 0
+                });
+                setIsReceiptOpen(true);
             }
         } catch (error) {
             console.error(error);
@@ -163,7 +173,13 @@ export default function OrdersPage() {
     };
 
     const viewReceipt = (order: any) => {
-        setSelectedOrder(order);
+        const amountPaid = order.paymentLinks?.reduce((sum: number, link: any) => sum + (link.payment?.amount || 0), 0) || 0;
+        const balanceDue = order.totalAmount - amountPaid;
+        setSelectedOrder({
+            ...order,
+            amountPaid,
+            balanceDue: balanceDue > 0 ? balanceDue : 0
+        });
         setIsReceiptOpen(true);
     };
 

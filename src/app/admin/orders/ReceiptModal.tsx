@@ -27,6 +27,16 @@ interface Order {
   totalAmount: number;
   status: string;
   items: OrderItem[];
+  paymentLinks?: {
+    payment: {
+      amount: number;
+      paymentMethod: {
+        name: string;
+      };
+    };
+  }[];
+  amountPaid?: number;
+  balanceDue?: number;
 }
 
 interface ReceiptModalProps {
@@ -173,6 +183,28 @@ export default function ReceiptModal({ order, isOpen, onClose }: ReceiptModalPro
               <span>Total Amount:</span>
               <span>{formatCurrency(order.totalAmount)}</span>
             </div>
+            {order.amountPaid !== undefined && order.amountPaid > 0 && (
+              <>
+                <div className={styles.totalRow}>
+                  <span>Amount Paid:</span>
+                  <span className={styles.paid}>{formatCurrency(order.amountPaid)}</span>
+                </div>
+                {order.balanceDue !== undefined && order.balanceDue > 0 && (
+                  <div className={`${styles.totalRow} ${styles.balanceDue}`}>
+                    <span>Balance Due:</span>
+                    <span>{formatCurrency(order.balanceDue)}</span>
+                  </div>
+                )}
+              </>
+            )}
+            {order.paymentLinks && order.paymentLinks.length > 0 && (
+              <div className={styles.paymentInfo}>
+                <div className={styles.totalRow}>
+                  <span>Payment Method:</span>
+                  <span>{order.paymentLinks[0].payment.paymentMethod?.name || "Cash"}</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className={styles.receiptFooter}>

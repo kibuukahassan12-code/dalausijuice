@@ -226,6 +226,26 @@
   margin-top: 10px;
 }
 
+.paid {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.balanceDue {
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.paymentInfo {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
 .receiptFooter {
   text-align: center;
   padding-top: 20px;
