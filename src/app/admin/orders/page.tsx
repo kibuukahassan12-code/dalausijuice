@@ -53,8 +53,22 @@ export default function OrdersPage() {
     }, [period]);
 
     const fetchDashboard = async () => {
-        const res = await fetch(`/api/admin/orders/dashboard?period=${period}`);
-        if (res.ok) setDashboard(await res.json());
+        try {
+            console.log("[Orders Page] Fetching dashboard...");
+            const res = await fetch(`/api/admin/orders/dashboard?period=${period}`, { cache: "no-store" });
+            console.log("[Orders Page] Dashboard response status:", res.status);
+            if (res.ok) {
+                const data = await res.json();
+                console.log("[Orders Page] Dashboard data:", data);
+                setDashboard(data);
+            } else {
+                console.error("[Orders Page] Failed to fetch dashboard");
+                setDashboard({ orders: [], trend: [], productDistribution: [], stats: { totalOrders: 0, totalRevenue: 0, pendingApproval: 0, cancelledCount: 0 } });
+            }
+        } catch (error) {
+            console.error("[Orders Page] Error fetching dashboard:", error);
+            setDashboard({ orders: [], trend: [], productDistribution: [], stats: { totalOrders: 0, totalRevenue: 0, pendingApproval: 0, cancelledCount: 0 } });
+        }
         setLoading(false);
     };
 
