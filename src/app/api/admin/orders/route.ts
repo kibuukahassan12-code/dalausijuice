@@ -116,32 +116,65 @@ export async function POST(request: Request) {
         console.log("[Orders API] Creating order for customer:", customer.id);
 
         // 3. Create the order with included relations
-        const order = await prisma.order.create({
-            data: {
-                customerId: customer.id,
-                orderDate: new Date(orderDate),
-                orderType,
-                transportFee: parseFloat(transportFee || "0"),
-                subtotal,
-                totalAmount,
-                status: "Waiting Approval",
-                items: {
-                    create: items.map((item: any) => ({
-                        productId: item.productId,
-                        quantity: item.quantity,
-                        unitPrice: item.unitPrice,
-                        totalPrice: item.quantity * item.unitPrice,
-                    })),
+        let order;
+        try {
+            order = await prisma.order.create({
+                data: {
+                    customerId: customer.id,
+                    orderDate: new Date(orderDate),
+                    orderType,
+                    transportFee: parseFloat(transportFee || "0"),
+                    subtotal,
+                    totalAmount,
+                    status: "Waiting Approval",
+                    items: {
+                        create: items.map((item: any) => ({
+                            productId: item.productId,
+                            quantity: item.quantity,
+                            unitPrice: item.unitPrice,
+                            totalPrice: item.quantity * item.unitPrice,
+                        })),
+                    },
                 },
-            },
-            include: {
-                customer: true,
-                items: { include: { product: true } },
-                paymentLinks: { include: { payment: true } }
+                include: {
+                    customer: true,
+                    items: { include: { product: true } },
+                    paymentLinks: { include: { payment: true } }
+                }
+            });
+            console.log("[Orders API] Order created:", order.id);
+        } catch (createError: any) {
+            // If fulfillmentStage column doesn't exist, retry without it
+            if (createError?.message?.includes("fulfillmentStage")) {
+                console.log("[Orders API] Retrying without fulfillmentStage...");
+                order = await prisma.order.create({
+                    data: {
+                        customerId: customer.id,
+                        orderDate: new Date(orderDate),
+                        orderType,
+                        transportFee: parseFloat(transportFee || "0"),
+                        subtotal,
+                        totalAmount,
+                        status: "Waiting Approval",
+                        items: {
+                            create: items.map((item: any) => ({
+                                productId: item.productId,
+                                quantity: item.quantity,
+                                unitPrice: item.unitPrice,
+                                totalPrice: item.quantity * item.unitPrice,
+                            })),
+                        },
+                    },
+                    include: {
+                        customer: true,
+                        items: { include: { product: true } },
+                    }
+                });
+                console.log("[Orders API] Order created (without fulfillmentStage):", order.id);
+            } else {
+                throw createError;
             }
-        });
-
-        console.log("[Orders API] Order created:", order.id);
+        }
 
         // 4. Create payment if any amount was paid
         const paidAmount = parseFloat(amountPaid || "0");
