@@ -61,6 +61,15 @@ export async function POST(request: Request) {
             force // Skip duplicate check if true
         } = data;
 
+        console.log("[Orders API] Creating order for:", customerName, customerPhone);
+        console.log("[Orders API] Items:", items?.length, "items");
+
+        // Validate required fields
+        if (!customerName || !customerPhone || !items || items.length === 0) {
+            console.error("[Orders API] Missing required fields");
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
+
         // 1. Find or create customer
         let customer = await prisma.customer.findFirst({
             where: { phone: customerPhone },
@@ -72,9 +81,7 @@ export async function POST(request: Request) {
             });
         }
 
-        // 2. Calculate totals
-        const subtotal = items.reduce((acc: number, item: any) => acc + (item.quantity * item.unitPrice), 0);
-        const totalAmount = subtotal + parseFloat(transportFee || 0);
+        console.log("[Orders API] Calculated total:", totalAmount);
 
         // 2b. Duplicate Check (Unless forced)
         if (!force) {
@@ -95,6 +102,7 @@ export async function POST(request: Request) {
             });
 
             if (duplicate) {
+                console.log("[Orders API] Duplicate detected:", duplicate.id);
                 return NextResponse.json({
                     error: "Duplicate detected",
                     message: `An order for UGX ${totalAmount.toLocaleString()} already exists for this customer on this date.`
@@ -102,7 +110,9 @@ export async function POST(request: Request) {
             }
         }
 
-        // 3. Create the order
+        console.log("[Orders API] Creating order for customer:", customer.id);
+
+        // 3. Create the order with included relations
         const order = await prisma.order.create({
             data: {
                 customerId: customer.id,
@@ -111,7 +121,7 @@ export async function POST(request: Request) {
                 transportFee: parseFloat(transportFee || 0),
                 subtotal,
                 totalAmount,
-                status: "Waiting Approval", // All new orders wait for manual approval
+                status: "Waiting Approval",
                 items: {
                     create: items.map((item: any) => ({
                         productId: item.productId,
@@ -121,30 +131,44 @@ export async function POST(request: Request) {
                     })),
                 },
             },
+            include: {
+                customer: true,
+                items: { include: { product: true } },
+                paymentLinks: { include: { payment: true } }
+            }
         });
 
+        console.log("[Orders API] Order created:", order.id);
+
         // 4. Create payment if any amount was paid
-        if (parseFloat(amountPaid) > 0) {
-            await prisma.payment.create({
-                data: {
-                    paymentMethodId,
-                    amountPaid: parseFloat(amountPaid),
-                    paymentDate: new Date(),
-                    paymentStatus: amountPaid >= totalAmount ? "Paid" : "Partial",
-                    links: {
-                        create: {
-                            entityType: "Order",
-                            entityId: order.id,
+        const paidAmount = parseFloat(amountPaid || "0");
+        if (paidAmount > 0 && paymentMethodId) {
+            try {
+                await prisma.payment.create({
+                    data: {
+                        paymentMethodId,
+                        amountPaid: paidAmount,
+                        paymentDate: new Date(),
+                        paymentStatus: paidAmount >= totalAmount ? "Paid" : "Partial",
+                        links: {
+                            create: {
+                                entityType: "Order",
+                                entityId: order.id,
+                            },
                         },
                     },
-                },
-            });
-            // DEFERRED ACCOUNTING: Accounting entries are only posted upon order approval.
+                });
+                console.log("[Orders API] Payment created for order:", order.id);
+            } catch (paymentError) {
+                console.error("[Orders API] Payment creation error:", paymentError);
+                // Don't fail the order if payment creation fails
+            }
         }
 
+        console.log("[Orders API] Order complete, returning:", order.id);
         return NextResponse.json(order);
-    } catch (error) {
-        console.error("Order creation error:", error);
-        return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+    } catch (error: any) {
+        console.error("[Orders API] Order creation error:", error?.message || error);
+        return NextResponse.json({ error: "Failed to create order: " + (error?.message || "Unknown error") }, { status: 500 });
     }
 }

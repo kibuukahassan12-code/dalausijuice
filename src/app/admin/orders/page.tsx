@@ -133,7 +133,7 @@ export default function OrdersPage() {
             if (res.status === 409) {
                 const error = await res.json();
                 if (confirm(`${error.message}\n\nDo you want to record it anyway?`)) {
-                    await fetch("/api/admin/orders", {
+                    const forceRes = await fetch("/api/admin/orders", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -141,20 +141,37 @@ export default function OrdersPage() {
                             items: selectedItems, paymentMethodId, amountPaid: amountPaid || "0", force: true
                         }),
                     });
-                    resetForm();
+                    if (forceRes.ok) {
+                        const createdOrder = await forceRes.json();
+                        resetForm();
+                        // Show receipt for the newly created order
+                        const paidAmount = createdOrder.paymentLinks?.reduce((sum: number, link: any) => sum + (link.payment?.amount || 0), 0) || parseFloat(amountPaid || "0");
+                        const balanceDue = createdOrder.totalAmount - paidAmount;
+                        setSelectedOrder({
+                            ...createdOrder,
+                            amountPaid: paidAmount,
+                            balanceDue: balanceDue > 0 ? balanceDue : 0
+                        });
+                        setIsReceiptOpen(true);
+                    } else {
+                        alert("Failed to create order. Please try again.");
+                    }
                 }
             } else if (res.ok) {
                 const createdOrder = await res.json();
                 resetForm();
                 // Show receipt for the newly created order
-                const amountPaid = createdOrder.paymentLinks?.reduce((sum: number, link: any) => sum + (link.payment?.amount || 0), 0) || parseFloat(amountPaid || "0");
-                const balanceDue = createdOrder.totalAmount - amountPaid;
+                const paidAmount = createdOrder.paymentLinks?.reduce((sum: number, link: any) => sum + (link.payment?.amount || 0), 0) || parseFloat(amountPaid || "0");
+                const balanceDue = createdOrder.totalAmount - paidAmount;
                 setSelectedOrder({
                     ...createdOrder,
-                    amountPaid,
+                    amountPaid: paidAmount,
                     balanceDue: balanceDue > 0 ? balanceDue : 0
                 });
                 setIsReceiptOpen(true);
+            } else {
+                const error = await res.json();
+                alert(error.error || "Failed to create order.");
             }
         } catch (error) {
             console.error(error);
