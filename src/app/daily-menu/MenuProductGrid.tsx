@@ -26,129 +26,6 @@ const FLAVOR_IMAGES: Record<string, string> = {
     "Watermelon": "/images/watermelon_juice.png",
 };
 
-// Featured products from hero page - these should always appear in the menu
-const FEATURED_PRODUCTS = [
-    {
-        id: "featured-passion-fruit",
-        name: "Passion Fruit Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/passion_juice.png",
-    },
-    {
-        id: "featured-mango",
-        name: "Mango Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/mango_bottle.png",
-    },
-    {
-        id: "featured-pineapple",
-        name: "Pineapple Mint Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/pineapple_mint.png",
-    },
-    {
-        id: "featured-milk-meld",
-        name: "Milk Meld",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/milk_meld.png",
-    },
-    {
-        id: "featured-watermelon",
-        name: "Watermelon Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/watermelon_juice.png",
-    },
-    {
-        id: "featured-soursop",
-        name: "Soursop Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/soursop_juice.png",
-    },
-    {
-        id: "featured-mango-cocktail",
-        name: "Mango Cocktail",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/mango_cocktail.png",
-    },
-    {
-        id: "featured-coconut-cocktail",
-        name: "Coconut Cocktail",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/coconut_cocktail_new.png",
-    },
-    {
-        id: "featured-avocado-mix",
-        name: "Avocado Mix",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/avocado_milk_mix.png",
-    },
-    {
-        id: "featured-orange",
-        name: "Orange Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/citrus_combo_new.png",
-    },
-    {
-        id: "featured-citrus-combo",
-        name: "Citrus Combo",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/citrus_combo_new.png",
-    },
-    {
-        id: "featured-sugarcane-ginger",
-        name: "Sugarcane and Ginger",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/sugarcane_ginger.png",
-    },
-    {
-        id: "featured-guava",
-        name: "Guava Juice",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/guava_juice_new.png",
-    },
-    {
-        id: "featured-beetroot-cocktail",
-        name: "Beetroot Cocktail",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/beetroot_cocktail.png",
-    },
-    {
-        id: "featured-mulondo-coffee",
-        name: "Mulondo Coffee Mix",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/mulondo_juice.png",
-    },
-    {
-        id: "featured-mango-passion",
-        name: "Mango Passion",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/mango_passion_new.png",
-    },
-    {
-        id: "featured-passion-cocktail",
-        name: "Passion Cocktail",
-        description: "1 Litre",
-        price: 10000,
-        image: "/images/passion_cocktail_new.png",
-    },
-];
-
 function getImageForFlavor(name: string, imageUrl?: string | null): string {
     if (imageUrl) return imageUrl;
     return FLAVOR_IMAGES[name] ?? "/images/dalausi-logo.png";
@@ -182,11 +59,11 @@ export default function MenuProductGrid() {
                     return;
                 }
 
-                // 2. If Open, fetch products
+                // 2. If Open, fetch products (API returns only showOnMenu=true products when menu=true)
                 const res = await fetch("/api/admin/products?menu=true", { cache: "no-store" });
                 const data = await res.json();
                 
-                // 3. Map API products
+                // 3. Map API products - only products with eye (showOnMenu=true) are returned
                 let apiProducts: Product[] = [];
                 if (res.ok && Array.isArray(data)) {
                     apiProducts = data.map((p: { id: string; name: string; unitPrice: number; imageUrl?: string | null }) => ({
@@ -199,24 +76,7 @@ export default function MenuProductGrid() {
                     }));
                 }
                 
-                // 4. Merge featured products with API products
-                // Featured products should always appear in the menu
-                const featuredProductsFormatted: Product[] = FEATURED_PRODUCTS.map(fp => ({
-                    id: fp.id,
-                    name: fp.name,
-                    description: fp.description,
-                    price: `UGX ${fp.price.toLocaleString()}`,
-                    image: fp.image,
-                    unitPrice: fp.price
-                }));
-                
-                // Combine featured products with API products, avoiding duplicates by name
-                const apiProductNames = new Set(apiProducts.map(p => p.name.toLowerCase()));
-                const uniqueFeaturedProducts = featuredProductsFormatted.filter(
-                    fp => !apiProductNames.has(fp.name.toLowerCase())
-                );
-                
-                setProducts([...uniqueFeaturedProducts, ...apiProducts]);
+                setProducts(apiProducts);
             } catch (err) {
                 console.error("Failed to load menu", err);
                 setProducts([]);
