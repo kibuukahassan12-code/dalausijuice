@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "next start -p %PORT%",
+    "start": "next start -p ",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,7 +14,7 @@
     "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "jose": "^6.2.1",
-    "jspdf": "^4.2.0",
+    "jspdf": "^4.2.1",
     "next": "14.2.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

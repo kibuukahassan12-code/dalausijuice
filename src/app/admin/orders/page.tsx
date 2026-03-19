@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import styles from "./orders.module.css";
 import ExportButton from "@/components/Admin/ExportButton";
+import ReceiptModal from "./ReceiptModal";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend
@@ -38,6 +41,8 @@ export default function OrdersPage() {
     const [loading, setLoading] = useState(true);
     const [formLoading, setFormLoading] = useState(false);
     const [period, setPeriod] = useState("today");
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
     const COLORS = ['#3e1c33', '#f97316', '#10b981', '#3b82f6', '#ef4444'];
 
@@ -155,6 +160,59 @@ export default function OrdersPage() {
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const viewReceipt = (order: any) => {
+        setSelectedOrder(order);
+        setIsReceiptOpen(true);
+    };
+
+    const downloadPDFReport = async () => {
+        if (!dashboard?.orders?.length) {
+            alert("No orders to generate report");
+            return;
+        }
+
+        const doc = new jsPDF();
+        const periodText = period.charAt(0).toUpperCase() + period.slice(1);
+        
+        // Title
+        doc.setFontSize(20);
+        doc.text(`Dalausi Juice - ${periodText} Orders Report`, 14, 20);
+        
+        // Date
+        doc.setFontSize(12);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
+        
+        // Stats
+        doc.setFontSize(14);
+        doc.text("Summary:", 14, 45);
+        doc.setFontSize(11);
+        doc.text(`Total Orders: ${dashboard.stats.totalOrders}`, 14, 55);
+        doc.text(`Total Revenue: UGX ${dashboard.stats.totalRevenue.toLocaleString()}`, 14, 62);
+        doc.text(`Pending Approval: ${dashboard.stats.pendingApproval}`, 14, 69);
+        doc.text(`Cancelled: ${dashboard.stats.cancelledCount}`, 14, 76);
+        
+        // Orders table
+        const tableData = dashboard.orders.map((o: any) => [
+            new Date(o.orderDate).toLocaleDateString(),
+            o.customer.name,
+            o.customer.phone,
+            `UGX ${o.totalAmount.toLocaleString()}`,
+            o.status,
+            o.orderType
+        ]);
+        
+        (doc as any).autoTable({
+            startY: 90,
+            head: [['Date', 'Customer', 'Phone', 'Total', 'Status', 'Type']],
+            body: tableData,
+            theme: 'striped',
+            headStyles: { fillColor: [62, 28, 51] },
+            styles: { fontSize: 10 }
+        });
+        
+        doc.save(`Orders-Report-${period}-${new Date().toISOString().split('T')[0]}.pdf`);
     };
 
     const formatCurrency = (val: any) => `UGX ${Number(val || 0).toLocaleString()}`;
@@ -320,6 +378,9 @@ export default function OrdersPage() {
                                     {p.charAt(0).toUpperCase() + p.slice(1)}
                                 </button>
                             ))}
+                            <button onClick={downloadPDFReport} className={styles.pdfReportBtn}>
+                                Download PDF Report
+                            </button>
                         </div>
                     </div>
 
@@ -355,7 +416,10 @@ export default function OrdersPage() {
                                                     <button onClick={() => handleAction(o.id, "CANCEL")} className={styles.cancelBtn}>Cancel</button>
                                                 </div>
                                             ) : o.status !== "Cancelled" && (
-                                                <button onClick={() => handleAction(o.id, "CANCEL")} className={styles.cancelBtnSmall}>Cancel</button>
+                                                <div className={styles.actionCell}>
+                                                    <button onClick={() => viewReceipt(o)} className={styles.receiptBtn}>View Receipt</button>
+                                                    <button onClick={() => handleAction(o.id, "CANCEL")} className={styles.cancelBtnSmall}>Cancel</button>
+                                                </div>
                                             )}
                                         </td>
                                     </tr>
@@ -365,6 +429,11 @@ export default function OrdersPage() {
                     </div>
                 </section>
             </div>
+            <ReceiptModal 
+                order={selectedOrder} 
+                isOpen={isReceiptOpen} 
+                onClose={() => setIsReceiptOpen(false)} 
+            />
         </div>
     );
 }

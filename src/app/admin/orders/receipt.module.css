@@ -1,0 +1,271 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 12px 12px 0 0;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: #3e1c33;
+  font-size: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.printBtn,
+.downloadBtn,
+.closeBtn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.printBtn {
+  background: #3b82f6;
+  color: white;
+}
+
+.printBtn:hover {
+  background: #2563eb;
+}
+
+.downloadBtn {
+  background: #10b981;
+  color: white;
+}
+
+.downloadBtn:hover:not(:disabled) {
+  background: #059669;
+}
+
+.downloadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.closeBtn {
+  background: #ef4444;
+  color: white;
+}
+
+.closeBtn:hover {
+  background: #dc2626;
+}
+
+.receipt {
+  padding: 30px;
+  background: white;
+}
+
+.receiptHeader {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px dashed #e2e8f0;
+}
+
+.companyName {
+  font-size: 2rem;
+  color: #3e1c33;
+  margin: 0 0 5px 0;
+  font-weight: 700;
+}
+
+.companySlogan {
+  color: #64748b;
+  margin: 0 0 15px 0;
+  font-style: italic;
+}
+
+.receiptTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #3e1c33;
+  border: 2px solid #3e1c33;
+  display: inline-block;
+  padding: 5px 20px;
+  border-radius: 4px;
+}
+
+.receiptInfo {
+  margin-bottom: 25px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dotted #e2e8f0;
+}
+
+.label {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.value {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.waiting_approval {
+  color: #f97316;
+  font-weight: 600;
+}
+
+.approved,
+.completed {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.cancelled {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.customerInfo {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.customerInfo h3 {
+  margin: 0 0 10px 0;
+  color: #3e1c33;
+  font-size: 1rem;
+}
+
+.customerInfo p {
+  margin: 5px 0;
+  color: #475569;
+}
+
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+.itemsTable thead {
+  background: #3e1c33;
+  color: white;
+}
+
+.itemsTable th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.itemsTable td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.itemsTable tbody tr:hover {
+  background: #f8fafc;
+}
+
+.totals {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #475569;
+}
+
+.grandTotal {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #3e1c33;
+  border-top: 2px solid #3e1c33;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.receiptFooter {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 2px dashed #e2e8f0;
+}
+
+.receiptFooter p {
+  margin: 5px 0;
+  color: #64748b;
+}
+
+.contact {
+  font-weight: 600;
+  color: #3e1c33;
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 15px;
+}
+
+@media print {
+  .modalOverlay {
+    position: static;
+    background: white;
+    padding: 0;
+  }
+  
+  .modalContent {
+    max-width: 100%;
+    max-height: none;
+    box-shadow: none;
+  }
+  
+  .modalHeader {
+    display: none;
+  }
+  
+  .receipt {
+    padding: 20px;
+  }
+}
