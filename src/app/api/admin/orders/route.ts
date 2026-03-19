@@ -81,6 +81,9 @@ export async function POST(request: Request) {
             });
         }
 
+        // 2. Calculate totals
+        const subtotal = items.reduce((acc: number, item: any) => acc + (item.quantity * item.unitPrice), 0);
+        const totalAmount = subtotal + parseFloat(transportFee || "0");
         console.log("[Orders API] Calculated total:", totalAmount);
 
         // 2b. Duplicate Check (Unless forced)
@@ -118,7 +121,7 @@ export async function POST(request: Request) {
                 customerId: customer.id,
                 orderDate: new Date(orderDate),
                 orderType,
-                transportFee: parseFloat(transportFee || 0),
+                transportFee: parseFloat(transportFee || "0"),
                 subtotal,
                 totalAmount,
                 status: "Waiting Approval",
